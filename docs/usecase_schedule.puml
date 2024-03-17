@@ -1,0 +1,23 @@
+@startuml "usecase_schedule"
+
+left to right direction
+
+actor "Студент" as user
+
+(Удалить расписание) as delete_schedule
+(Добавить/изменить \n расписание) as put_schedule
+(Просмотреть расписание) as get_schedule
+
+(Удалить занятие) as delete_lesson
+(Добавить/изменить \n занятие) as put_lesson
+(Просмотреть занятие) as get_lesson
+
+user --> put_schedule
+user --> get_schedule
+user --> delete_schedule
+
+put_schedule <.. put_lesson : <<include>>
+put_schedule <.. delete_lesson : <<extend>>
+get_schedule <.. get_lesson : <<extend>>
+
+@enduml

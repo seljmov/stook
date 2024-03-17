@@ -1,0 +1,17 @@
+@startuml "usecase_resources"
+
+left to right direction
+
+actor "Студент" as user
+
+(Добавить/изменить \n ресурс) as add_resource
+(Просмотреть ресурсы) as view_resources
+(Просмотреть ресурс) as view_resource
+(Удалить ресурс) as delete_resource
+
+user --> add_resource
+user --> delete_resource
+user --> view_resources
+view_resources <.. view_resource : <<extends>>
+
+@enduml

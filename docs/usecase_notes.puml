@@ -1,0 +1,17 @@
+@startuml "usecase_notes"
+
+left to right direction
+
+actor "Студент" as user
+
+(Добавить/изменить \n заметку) as manageNote
+(Просмотреть заметки) as viewNotes
+(Просмотреть \n подробности заметки) as viewNoteDetails
+(Удалить заметку) as deleteNote
+
+user --> manageNote
+user --> deleteNote
+user --> viewNotes
+viewNotes <.. viewNoteDetails : <<extends>>
+
+@enduml
