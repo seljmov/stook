@@ -17,6 +17,7 @@ dependencies:
   path_provider: ^2.1.2
   path: ^1.9.0
   octopus: ^0.0.8
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:
