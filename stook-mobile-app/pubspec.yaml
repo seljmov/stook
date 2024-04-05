@@ -16,6 +16,7 @@ dependencies:
   sqlite3: ^2.4.0
   path_provider: ^2.1.2
   path: ^1.9.0
+  octopus: ^0.0.8
 
 dev_dependencies:
   flutter_test:
