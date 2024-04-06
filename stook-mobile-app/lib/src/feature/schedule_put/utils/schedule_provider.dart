@@ -14,14 +14,15 @@ class ScheduleProvider with ChangeNotifier {
   /// Список недель.
   List<Week> get weeks => _weeks;
 
+  /// Расписание корректно, если все дни в неделях не пусты.
+  bool get isCorrect => _weeks.every((week) => week.isCorrect);
+
   /// Добавить неделю.
   void addWeek() {
     _weeks.add(Week(
       number: _weeks.length + 1,
       days: List.generate(6, (index) => Day(number: index + 1)),
     ));
-    debugPrint('weeks: $_weeks');
-    debugPrint('weeks.length: ${_weeks.length}');
     notifyListeners();
   }
 

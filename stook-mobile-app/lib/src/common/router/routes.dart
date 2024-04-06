@@ -5,7 +5,6 @@ import 'package:octopus/octopus.dart';
 import '../../feature/home/home_screen.dart';
 import '../../feature/notes/notes_screen.dart';
 import '../../feature/resources/resources_screen.dart';
-import '../../feature/schedule_put/lesson_put/lesson_put_screen.dart';
 import '../../feature/schedule_put/schedule_put_screen.dart';
 import '../../feature/tasks/tasks_screen.dart';
 
@@ -13,7 +12,6 @@ import '../../feature/tasks/tasks_screen.dart';
 enum Routes with OctopusRoute {
   home('home'),
   schedulePut('schedulePut'),
-  lessonPut('lessonPut'),
   tasks('tasks'),
   resources('resources'),
   notes('notes');
@@ -28,7 +26,6 @@ enum Routes with OctopusRoute {
       switch (this) {
         Routes.home => const HomeScreen(),
         Routes.schedulePut => const SchedulePutScreen(),
-        Routes.lessonPut => const LessonPutScreen(),
         Routes.tasks => const TasksScreen(),
         Routes.resources => const ResourcesScreen(),
         Routes.notes => const NotesScreen(),

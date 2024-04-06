@@ -19,10 +19,6 @@ class _AppState extends State<App> with RouterStateMixin {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        scaffoldBackgroundColor: Colors.white,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-        ),
         useMaterial3: true,
       ),
       routerConfig: router.config,

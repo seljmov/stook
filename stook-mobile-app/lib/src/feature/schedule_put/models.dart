@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Week {
   int number;
   bool isHidden;
@@ -5,6 +7,9 @@ class Week {
 
   Week({required this.number, this.isHidden = false, List<Day>? days})
       : days = days ?? [];
+
+  /// Неделя не пуста, если все дни содержат хотя бы одно занятие.
+  bool get isCorrect => days.every((day) => day.lessons.isNotEmpty);
 }
 
 class Day {
@@ -44,5 +49,35 @@ class Lesson {
   final String place;
   final String teacher;
 
-  Lesson({this.name = '', this.place = '', this.teacher = ''});
+  Lesson({this.name = 'Занятие', this.place = '', this.teacher = ''});
+
+  Lesson copyWith({
+    String? name,
+    String? place,
+    String? teacher,
+  }) {
+    return Lesson(
+      name: name ?? this.name,
+      place: place ?? this.place,
+      teacher: teacher ?? this.teacher,
+    );
+  }
+
+  factory Lesson.fromJson(Map<String, dynamic> json) {
+    return Lesson(
+      name: json['name'] ?? '',
+      place: json['place'] ?? '',
+      teacher: json['teacher'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'place': place,
+      'teacher': teacher,
+    };
+  }
+
+  String get toStr => jsonEncode(toJson());
 }

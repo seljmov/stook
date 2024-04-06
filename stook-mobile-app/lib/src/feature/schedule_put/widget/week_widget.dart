@@ -34,6 +34,7 @@ class WeekWidget extends StatelessWidget {
             child: Row(
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
@@ -92,7 +93,12 @@ class WeekWidget extends StatelessWidget {
                   child: DayCard(
                     day: day,
                     onAddLesson: (day) {
+                      day.addLesson();
                       week.days[index] = day;
+                      onWeekUpdate(week);
+                    },
+                    onUpdateDay: (updatedDay) {
+                      week.days[index] = updatedDay;
                       onWeekUpdate(week);
                     },
                   ),
