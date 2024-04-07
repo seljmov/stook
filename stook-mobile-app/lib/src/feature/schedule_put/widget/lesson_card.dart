@@ -16,12 +16,11 @@ class LessonCard extends StatelessWidget {
   final int number;
   final Lesson lesson;
   final void Function(Lesson lesson) onLessonEdit;
-  final void Function(Lesson lesson) onLessonUpdate;
+  final String? Function(Lesson lesson) onLessonUpdate;
   final void Function(Lesson lesson) onLessonRemove;
 
   @override
   Widget build(BuildContext context) {
-    final lessonTimes = lesson.timeByNumber(number);
     return ConstrainedBox(
       constraints: const BoxConstraints(
         minHeight: 36,
@@ -59,11 +58,11 @@ class LessonCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          lessonTimes.$1,
+                          lesson.timeStart.format(context),
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         Text(
-                          lessonTimes.$2,
+                          lesson.timeEnd.format(context),
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall!

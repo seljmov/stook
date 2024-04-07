@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'package:flutter/material.dart';
 
 class Week {
   int number;
@@ -48,59 +48,35 @@ class Lesson {
   final String name;
   final String place;
   final String teacher;
+  final TimeOfDay timeStart;
+  final TimeOfDay timeEnd;
 
-  Lesson({this.name = 'Занятие', this.place = '', this.teacher = ''});
+  Lesson({
+    this.name = 'Занятие',
+    this.place = '',
+    this.teacher = '',
+    this.timeStart = const TimeOfDay(hour: 8, minute: 30),
+    this.timeEnd = const TimeOfDay(hour: 10, minute: 0),
+  });
 
   Lesson copyWith({
     String? name,
     String? place,
     String? teacher,
+    TimeOfDay? timeStart,
+    TimeOfDay? timeEnd,
   }) {
     return Lesson(
       name: name ?? this.name,
       place: place ?? this.place,
       teacher: teacher ?? this.teacher,
+      timeStart: timeStart ?? this.timeStart,
+      timeEnd: timeEnd ?? this.timeEnd,
     );
   }
 
-  (String, String) timeByNumber(int number) {
-    switch (number) {
-      case 1:
-        return ('08:30', '10:00');
-      case 2:
-        return ('10:15', '11:45');
-      case 3:
-        return ('12:00', '13:30');
-      case 4:
-        return ('14:00', '15:30');
-      case 5:
-        return ('15:45', '17:15');
-      case 6:
-        return ('17:30', '19:00');
-      case 7:
-        return ('19:15', '20:45');
-      case 8:
-        return ('21:00', '22:30');
-      default:
-        return ('', '');
-    }
+  @override
+  String toString() {
+    return 'Lesson(name: $name, place: $place, teacher: $teacher, timeStart: $timeStart, timeEnd: $timeEnd)';
   }
-
-  factory Lesson.fromJson(Map<String, dynamic> json) {
-    return Lesson(
-      name: json['name'] ?? '',
-      place: json['place'] ?? '',
-      teacher: json['teacher'] ?? '',
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'place': place,
-      'teacher': teacher,
-    };
-  }
-
-  String get toStr => jsonEncode(toJson());
 }

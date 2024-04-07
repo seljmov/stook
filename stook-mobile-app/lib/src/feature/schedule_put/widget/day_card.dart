@@ -1,5 +1,7 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
+import '../../../common/extension/time_of_day_x.dart';
 import '../lesson_put/lesson_put_screen.dart';
 import '../models.dart';
 import 'lesson_card.dart';
@@ -15,6 +17,26 @@ class DayCard extends StatelessWidget {
   final Day day;
   final void Function(Day day) onAddLesson;
   final void Function(Day day) onUpdateDay;
+
+  String? _updateLesson(Lesson lesson, void Function() onUpdateLesson) {
+    if (lesson.name.isEmpty) {
+      return 'Название занятия не может быть пустым';
+    }
+
+    final intersectedLesson = day.lessons.firstWhereOrNull(
+      (l) =>
+          l != lesson &&
+          (l.timeStart.isBefore(lesson.timeEnd) &&
+              l.timeEnd.isAfter(lesson.timeStart)),
+    );
+    if (intersectedLesson != null) {
+      return 'Время пересекается с занятием "${intersectedLesson.name}"';
+    }
+
+    onUpdateLesson();
+    onUpdateDay(day);
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +57,8 @@ class DayCard extends StatelessWidget {
           ),
           child: Column(
             children: [
-              for (final lesson in day.lessons)
+              for (final lesson in day.lessons
+                  .sorted((a, b) => a.timeStart.compareTo(b.timeStart)))
                 Column(
                   children: [
                     Padding(
@@ -51,19 +74,18 @@ class DayCard extends StatelessWidget {
                             MaterialPageRoute(
                               builder: (context) => LessonPutScreen(
                                 lesson: lesson,
-                                onLessonUpdate: (updatedLesson) {
+                                onLessonUpdate: (updatedLesson) =>
+                                    _updateLesson(updatedLesson, () {
                                   day.lessons[day.lessons.indexOf(lesson)] =
                                       updatedLesson;
-                                  onUpdateDay(day);
-                                },
+                                }),
                               ),
                             ),
                           );
                         },
-                        onLessonUpdate: (lesson) {
+                        onLessonUpdate: (lesson) => _updateLesson(lesson, () {
                           day.lessons[day.lessons.indexOf(lesson)] = lesson;
-                          onUpdateDay(day);
-                        },
+                        }),
                         onLessonRemove: (lesson) {
                           day.lessons.remove(lesson);
                           onUpdateDay(day);
@@ -87,10 +109,9 @@ class DayCard extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) => LessonPutScreen(
                           lesson: Lesson(),
-                          onLessonUpdate: (lesson) {
+                          onLessonUpdate: (lesson) => _updateLesson(lesson, () {
                             day.lessons.add(lesson);
-                            onUpdateDay(day);
-                          },
+                          }),
                         ),
                       ),
                     );
