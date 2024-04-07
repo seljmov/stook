@@ -63,6 +63,29 @@ class Lesson {
     );
   }
 
+  (String, String) timeByNumber(int number) {
+    switch (number) {
+      case 1:
+        return ('08:30', '10:00');
+      case 2:
+        return ('10:15', '11:45');
+      case 3:
+        return ('12:00', '13:30');
+      case 4:
+        return ('14:00', '15:30');
+      case 5:
+        return ('15:45', '17:15');
+      case 6:
+        return ('17:30', '19:00');
+      case 7:
+        return ('19:15', '20:45');
+      case 8:
+        return ('21:00', '22:30');
+      default:
+        return ('', '');
+    }
+  }
+
   factory Lesson.fromJson(Map<String, dynamic> json) {
     return Lesson(
       name: json['name'] ?? '',

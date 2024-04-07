@@ -79,46 +79,49 @@ class DayCard extends StatelessWidget {
                     ),
                   ],
                 ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => LessonPutScreen(
-                        lesson: Lesson(),
-                        onLessonUpdate: (lesson) {
-                          day.lessons.add(lesson);
-                          onUpdateDay(day);
-                        },
-                      ),
-                    ),
-                  );
-                },
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 16,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          shape: BoxShape.circle,
+              Visibility(
+                visible: day.lessons.length < 8,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => LessonPutScreen(
+                          lesson: Lesson(),
+                          onLessonUpdate: (lesson) {
+                            day.lessons.add(lesson);
+                            onUpdateDay(day);
+                          },
                         ),
-                        child: Padding(
-                          padding: EdgeInsets.all(2.0),
-                          child: Icon(
-                            Icons.add,
-                            size: 16.0,
-                            color: Colors.white,
+                      ),
+                    );
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 16,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(2.0),
+                            child: Icon(
+                              Icons.add,
+                              size: 16.0,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(width: 8),
-                      Text('Добавить'),
-                    ],
+                        SizedBox(width: 8),
+                        Text('Добавить'),
+                      ],
+                    ),
                   ),
                 ),
               ),
