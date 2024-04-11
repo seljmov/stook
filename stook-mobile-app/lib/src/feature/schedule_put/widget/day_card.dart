@@ -25,7 +25,7 @@ class DayCard extends StatelessWidget {
 
     final intersectedLesson = day.lessons.firstWhereOrNull(
       (l) =>
-          l != lesson &&
+          l.id != lesson.id &&
           (l.timeStart.isBefore(lesson.timeEnd) &&
               l.timeEnd.isAfter(lesson.timeStart)),
     );
@@ -108,7 +108,7 @@ class DayCard extends StatelessWidget {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => LessonPutScreen(
-                          lesson: Lesson(),
+                          lesson: const Lesson(),
                           onLessonUpdate: (lesson) => _updateLesson(lesson, () {
                             day.lessons.add(lesson);
                           }),

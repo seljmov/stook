@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:stook_database/models/enums/enums.dart';
-import 'package:stook_database/models/models.dart' as models;
 import 'package:stook_database/database_context.dart' as database;
 
 import '../../common/extension/time_of_day_x.dart';
@@ -35,7 +34,7 @@ class Week {
           timeEnd: lesson.timeEnd.toDateTime(),
           weekNumber: number,
           dayOfWeek: day.dayOfWeek,
-          lessonType: models.LessonType.lecture,
+          lessonType: lesson.type,
         );
       });
     }).toList();
@@ -56,7 +55,7 @@ class Day {
 
   /// Добавить занятие.
   void addLesson() {
-    lessons.add(Lesson());
+    lessons.add(const Lesson());
   }
 
   /// Полуить название дня недели.
@@ -82,6 +81,9 @@ class Day {
 
 /// Занятие.
 class Lesson {
+  /// Идентификатор занятия.
+  final int id;
+
   /// Название занятия.
   final String name;
 
@@ -97,29 +99,41 @@ class Lesson {
   /// Время окончания занятия.
   final TimeOfDay timeEnd;
 
+  /// Тип занятия.
+  final LessonType type;
+
   /// Конструктор.
-  Lesson({
+  const Lesson({
+    this.id = 0,
     this.name = 'Занятие',
     this.place = '',
     this.teacher = '',
     this.timeStart = const TimeOfDay(hour: 8, minute: 30),
     this.timeEnd = const TimeOfDay(hour: 10, minute: 0),
+    this.type = LessonType.lecture,
   });
 
   /// Копировать занятие с изменением указанных полей.
   Lesson copyWith({
+    int? id,
     String? name,
     String? place,
     String? teacher,
     TimeOfDay? timeStart,
     TimeOfDay? timeEnd,
+    LessonType? type,
   }) {
     return Lesson(
+      id: id ?? this.id,
       name: name ?? this.name,
       place: place ?? this.place,
       teacher: teacher ?? this.teacher,
       timeStart: timeStart ?? this.timeStart,
       timeEnd: timeEnd ?? this.timeEnd,
+      type: type ?? this.type,
     );
   }
+
+  String get toStr =>
+      'Lesson(id: $id, name: $name, place: $place, teacher: $teacher, timeStart: $timeStart, timeEnd: $timeEnd, type: $type)';
 }

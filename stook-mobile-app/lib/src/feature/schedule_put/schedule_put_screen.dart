@@ -28,7 +28,6 @@ class _SchedulePutScreenState extends State<SchedulePutScreen> {
   Future<List<Week>> _loadFromDatabase() async {
     final lessons = await widget.databaseContext.lessonsDao.getAllLessons();
     final lessonsByWeek = lessons.groupListsBy((lessons) => lessons.weekNumber);
-    debugPrint('Lessons: $lessons');
     final weeks = <Week>[];
     for (final weekNumber in lessonsByWeek.keys) {
       final week = Week(
@@ -47,11 +46,13 @@ class _SchedulePutScreenState extends State<SchedulePutScreen> {
         final lessons = lessonsByDay[dayOfWeek] ?? [];
         day.lessons.addAll(lessons.map((lesson) {
           return models.Lesson(
+            id: lesson.id,
             name: lesson.title,
             place: lesson.place,
             teacher: lesson.teacher,
             timeStart: TimeOfDay.fromDateTime(lesson.timeStart),
             timeEnd: TimeOfDay.fromDateTime(lesson.timeEnd),
+            type: lesson.lessonType,
           );
         }));
       }
@@ -65,14 +66,13 @@ class _SchedulePutScreenState extends State<SchedulePutScreen> {
     return FutureBuilder(
       future: _loadFromDatabase(),
       builder: (context, snapshot) {
-        debugPrint('state: ${snapshot.connectionState}');
         if (snapshot.hasError) {
           return Center(
             child: Text('Ошибка: ${snapshot.error}'),
           );
         } else if (snapshot.connectionState == ConnectionState.done) {
           final weeks = snapshot.data as List<Week>;
-          debugPrint('Weeks: $weeks');
+
           return ChangeNotifierProvider(
             create: (context) => ScheduleProvider(weeks),
             child: Builder(builder: (context) {

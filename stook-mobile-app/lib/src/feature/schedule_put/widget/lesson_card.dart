@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models.dart';
+import 'lesson_type_card.dart';
 
 /// Карточка занятия.
 class LessonCard extends StatelessWidget {
@@ -25,7 +26,6 @@ class LessonCard extends StatelessWidget {
       constraints: const BoxConstraints(
         minHeight: 36,
       ),
-      //height: 36,
       child: IntrinsicHeight(
         child: Row(
           children: [
@@ -86,36 +86,50 @@ class LessonCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              lesson.name,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(fontWeight: FontWeight.w400),
-                            ),
-                            Visibility(
-                              visible: lesson.teacher.isNotEmpty,
-                              child: Text(
-                                ", ${lesson.teacher}",
+                        LessonTypeCard(lessonType: lesson.type),
+                        Text(
+                          lesson.name,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(fontWeight: FontWeight.w400),
+                        ),
+                        Visibility(
+                          visible: lesson.teacher.isNotEmpty,
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.person,
+                                size: 16.0,
+                                color: Colors.grey,
+                              ),
+                              Text(
+                                lesson.teacher,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodySmall!
                                     .copyWith(color: Colors.grey),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         Visibility(
                           visible: lesson.place.isNotEmpty,
-                          child: Text(
-                            lesson.place,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall!
-                                .copyWith(color: Colors.grey),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.location_on_rounded,
+                                size: 16.0,
+                                color: Colors.grey,
+                              ),
+                              Text(
+                                lesson.place,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(color: Colors.grey),
+                              ),
+                            ],
                           ),
                         ),
                       ],
