@@ -7,6 +7,7 @@ import 'package:path/path.dart' as p;
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
+import 'daos/lesson_dao.dart';
 import 'models/enums/day_of_week.dart';
 import 'models/enums/lesson_type.dart';
 import 'models/enums/resource_type.dart';
@@ -19,8 +20,10 @@ import 'models/task.dart';
 
 part 'database_context.g.dart';
 
+/// Контекст базы данных.
 @DriftDatabase(
-  tables: [Tasks, Lessons, Resources, Notes, Schedules],
+  tables: [Lessons, Tasks, Resources, Notes, Schedules],
+  daos: [LessonsDao],
 )
 class DatabaseContext extends _$DatabaseContext {
   DatabaseContext() : super(_openConnection());

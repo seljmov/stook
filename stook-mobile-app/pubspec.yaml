@@ -1,6 +1,6 @@
 name: stook_mobile_app
 description: "A new Flutter project."
-
+publish_to: 'none'
 version: 1.0.0+1
 
 environment:
@@ -19,6 +19,10 @@ dependencies:
   octopus: ^0.0.8
   provider: ^6.1.2
   collection: ^1.18.0
+  injector: ^3.0.0
+  stook_database:
+    path: 'packages/database'
+  drift_db_viewer: ^2.1.0
 
 dev_dependencies:
   flutter_test:

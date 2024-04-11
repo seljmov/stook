@@ -1,15 +1,25 @@
 import 'package:flutter/widgets.dart';
+import 'package:stook_database/models/enums/day_of_week.dart';
 
 import '../models.dart';
 
 /// Провайдер для управления расписанием.
 class ScheduleProvider with ChangeNotifier {
-  final List<Week> _weeks = [
-    Week(
-      number: 1,
-      days: List.generate(6, (index) => Day(number: index + 1)),
-    ),
-  ];
+  final List<Week> _weeks = [];
+
+  ScheduleProvider(List<Week> weeks) {
+    if (weeks.isNotEmpty) {
+      _weeks.addAll(weeks);
+    } else {
+      _weeks.add(Week(
+        number: 1,
+        days: List.generate(
+          6,
+          (index) => Day(dayOfWeek: DayOfWeek.values[index]),
+        ),
+      ));
+    }
+  }
 
   /// Список недель.
   List<Week> get weeks => _weeks;
@@ -21,7 +31,10 @@ class ScheduleProvider with ChangeNotifier {
   void addWeek() {
     _weeks.add(Week(
       number: _weeks.length + 1,
-      days: List.generate(6, (index) => Day(number: index + 1)),
+      days: List.generate(
+        6,
+        (index) => Day(dayOfWeek: DayOfWeek.values[index]),
+      ),
     ));
     notifyListeners();
   }

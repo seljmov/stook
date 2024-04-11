@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// TODO: Хорошо бы когда-нибудь покрыть тестами.
 /// Расширение для TimeOfDay.
 extension TimeOfDayX on TimeOfDay {
   /// Возвращает true, если текущее время раньше, чем переданное.
@@ -27,5 +28,10 @@ extension TimeOfDayX on TimeOfDay {
       return this.hour - other.hour;
     }
     return this.minute - other.minute;
+  }
+
+  /// Преобразует TimeOfDay в DateTime.
+  DateTime toDateTime() {
+    return DateTime(0, 0, 0, hour, minute);
   }
 }

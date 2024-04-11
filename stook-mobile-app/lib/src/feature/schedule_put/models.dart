@@ -1,56 +1,103 @@
 import 'package:flutter/material.dart';
+import 'package:stook_database/models/enums/enums.dart';
+import 'package:stook_database/models/models.dart' as models;
+import 'package:stook_database/database_context.dart' as database;
 
+import '../../common/extension/time_of_day_x.dart';
+
+/// Неделя расписания.
 class Week {
+  /// Номер недели.
   int number;
+
+  /// Скрыта ли неделя.
   bool isHidden;
+
+  /// Дни недели.
   final List<Day> days;
 
+  /// Конструктор.
   Week({required this.number, this.isHidden = false, List<Day>? days})
       : days = days ?? [];
 
   /// Неделя не пуста, если все дни содержат хотя бы одно занятие.
   bool get isCorrect => days.every((day) => day.lessons.isNotEmpty);
+
+  /// Преобразовать неделю в список занятий.
+  List<database.LessonsCompanion> toLessons() {
+    return days.expand((day) {
+      return day.lessons.map((lesson) {
+        return database.LessonsCompanion.insert(
+          title: lesson.name,
+          place: lesson.place,
+          teacher: lesson.teacher,
+          timeStart: lesson.timeStart.toDateTime(),
+          timeEnd: lesson.timeEnd.toDateTime(),
+          weekNumber: number,
+          dayOfWeek: day.dayOfWeek,
+          lessonType: models.LessonType.lecture,
+        );
+      });
+    }).toList();
+  }
 }
 
+/// День недели.
 class Day {
-  final int number;
+  /// Номер дня недели.
+  final DayOfWeek dayOfWeek;
+
+  /// Занятия дня.
   final List<Lesson> lessons;
 
-  Day({required this.number, List<Lesson>? lessons}) : lessons = lessons ?? [];
+  /// Конструктор.
+  Day({required this.dayOfWeek, List<Lesson>? lessons})
+      : lessons = lessons ?? [];
 
+  /// Добавить занятие.
   void addLesson() {
     lessons.add(Lesson());
   }
 
+  /// Полуить название дня недели.
   String get name {
-    switch (number) {
-      case 1:
+    switch (dayOfWeek) {
+      case DayOfWeek.monday:
         return 'Понедельник';
-      case 2:
+      case DayOfWeek.tuesday:
         return 'Вторник';
-      case 3:
+      case DayOfWeek.wednesday:
         return 'Среда';
-      case 4:
+      case DayOfWeek.thursday:
         return 'Четверг';
-      case 5:
+      case DayOfWeek.friday:
         return 'Пятница';
-      case 6:
+      case DayOfWeek.saturday:
         return 'Суббота';
-      case 7:
+      case DayOfWeek.sunday:
         return 'Воскресенье';
-      default:
-        return '';
     }
   }
 }
 
+/// Занятие.
 class Lesson {
+  /// Название занятия.
   final String name;
+
+  /// Место проведения занятия.
   final String place;
+
+  /// Преподаватель.
   final String teacher;
+
+  /// Время начала занятия.
   final TimeOfDay timeStart;
+
+  /// Время окончания занятия.
   final TimeOfDay timeEnd;
 
+  /// Конструктор.
   Lesson({
     this.name = 'Занятие',
     this.place = '',
@@ -59,6 +106,7 @@ class Lesson {
     this.timeEnd = const TimeOfDay(hour: 10, minute: 0),
   });
 
+  /// Копировать занятие с изменением указанных полей.
   Lesson copyWith({
     String? name,
     String? place,
@@ -73,10 +121,5 @@ class Lesson {
       timeStart: timeStart ?? this.timeStart,
       timeEnd: timeEnd ?? this.timeEnd,
     );
-  }
-
-  @override
-  String toString() {
-    return 'Lesson(name: $name, place: $place, teacher: $teacher, timeStart: $timeStart, timeEnd: $timeEnd)';
   }
 }
