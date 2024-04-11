@@ -102,6 +102,7 @@ class _SchedulePutScreenState extends State<SchedulePutScreen> {
                                   backgroundColor: Colors.redAccent,
                                 ),
                               );
+                              return;
                             }
                             // else if (!provider.isCorrect) {
                             //   ScaffoldMessenger.of(context).showSnackBar(
@@ -111,26 +112,56 @@ class _SchedulePutScreenState extends State<SchedulePutScreen> {
                             //     ),
                             //   );
                             // }
-                            else {
-                              final lessons = provider.weeks
-                                  .map((week) => week.toLessons())
-                                  .expand((element) => element)
-                                  .toList();
-                              final oldLessons = await widget
-                                  .databaseContext.lessonsDao
-                                  .getAllLessons();
-                              await widget.databaseContext.lessonsDao
-                                  .deleteAllLessons();
-                              try {
-                                await widget.databaseContext.lessonsDao
-                                    .insertLessonsCompanions(lessons);
-                              } catch (e) {
-                                await widget.databaseContext.lessonsDao
-                                    .insertLessons(oldLessons);
-                                rethrow;
-                              }
-                              Navigator.of(context).pop();
+
+                            // Пользователю нужно выбрать с какой недели начинать показ расписания
+                            int? startWeekNumber = provider.weeks.length == 1
+                                ? provider.weeks.first.number
+                                : null;
+                            while (startWeekNumber == null) {
+                              startWeekNumber = await showDialog<int>(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text(
+                                      'Выберите начальную неделю',
+                                    ),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        for (final week in provider.weeks)
+                                          ListTile(
+                                            title:
+                                                Text('Неделя ${week.number}'),
+                                            onTap: () {
+                                              Navigator.of(context)
+                                                  .pop(week.number);
+                                            },
+                                          ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
                             }
+
+                            final lessons = provider.weeks
+                                .map((week) => week.toLessons())
+                                .expand((element) => element)
+                                .toList();
+                            final oldLessons = await widget
+                                .databaseContext.lessonsDao
+                                .getAllLessons();
+                            await widget.databaseContext.lessonsDao
+                                .deleteAllLessons();
+                            try {
+                              await widget.databaseContext.lessonsDao
+                                  .insertLessonsCompanions(lessons);
+                            } catch (e) {
+                              await widget.databaseContext.lessonsDao
+                                  .insertLessons(oldLessons);
+                              rethrow;
+                            }
+                            Navigator.of(context).pop();
                           },
                         ),
                       ),
