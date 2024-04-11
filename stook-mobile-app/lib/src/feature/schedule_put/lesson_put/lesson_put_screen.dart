@@ -12,8 +12,8 @@ class LessonPutScreen extends StatefulWidget {
     required this.onLessonUpdate,
   });
 
-  final Lesson lesson;
-  final String? Function(Lesson updatedLesson) onLessonUpdate;
+  final LessonEntity lesson;
+  final String? Function(LessonEntity updatedLesson) onLessonUpdate;
 
   @override
   State<LessonPutScreen> createState() => _LessonPutScreenState();

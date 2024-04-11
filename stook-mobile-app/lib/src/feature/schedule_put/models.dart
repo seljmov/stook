@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:stook_database/models/enums/enums.dart';
-import 'package:stook_database/database_context.dart' as database;
-
-import '../../common/extension/time_of_day_x.dart';
 
 /// Неделя расписания.
-class Week {
+class WeekEntity {
   /// Номер недели.
   int number;
 
@@ -13,49 +10,36 @@ class Week {
   bool isHidden;
 
   /// Дни недели.
-  final List<Day> days;
+  final List<DayEntity> days;
 
   /// Конструктор.
-  Week({required this.number, this.isHidden = false, List<Day>? days})
-      : days = days ?? [];
+  WeekEntity({
+    required this.number,
+    this.isHidden = false,
+    List<DayEntity>? days,
+  }) : days = days ?? [];
 
-  /// Неделя не пуста, если все дни содержат хотя бы одно занятие.
-  bool get isCorrect => days.every((day) => day.lessons.isNotEmpty);
-
-  /// Преобразовать неделю в список занятий.
-  List<database.LessonsCompanion> toLessons() {
-    return days.expand((day) {
-      return day.lessons.map((lesson) {
-        return database.LessonsCompanion.insert(
-          title: lesson.name,
-          place: lesson.place,
-          teacher: lesson.teacher,
-          timeStart: lesson.timeStart.toDateTime(),
-          timeEnd: lesson.timeEnd.toDateTime(),
-          weekNumber: number,
-          dayOfWeek: day.dayOfWeek,
-          lessonType: lesson.type,
-        );
-      });
-    }).toList();
-  }
+  /// Неделя корректна, если в ней содежится хотя бы одно занятие.
+  bool get isCorrect => days.any((day) => day.lessons.isNotEmpty);
 }
 
 /// День недели.
-class Day {
+class DayEntity {
   /// Номер дня недели.
   final DayOfWeek dayOfWeek;
 
   /// Занятия дня.
-  final List<Lesson> lessons;
+  final List<LessonEntity> lessons;
 
   /// Конструктор.
-  Day({required this.dayOfWeek, List<Lesson>? lessons})
-      : lessons = lessons ?? [];
+  DayEntity({
+    required this.dayOfWeek,
+    List<LessonEntity>? lessons,
+  }) : lessons = lessons ?? [];
 
   /// Добавить занятие.
   void addLesson() {
-    lessons.add(const Lesson());
+    lessons.add(const LessonEntity());
   }
 
   /// Полуить название дня недели.
@@ -80,7 +64,7 @@ class Day {
 }
 
 /// Занятие.
-class Lesson {
+class LessonEntity {
   /// Идентификатор занятия.
   final int id;
 
@@ -103,7 +87,7 @@ class Lesson {
   final LessonType type;
 
   /// Конструктор.
-  const Lesson({
+  const LessonEntity({
     this.id = 0,
     this.name = 'Занятие',
     this.place = '',
@@ -114,7 +98,7 @@ class Lesson {
   });
 
   /// Копировать занятие с изменением указанных полей.
-  Lesson copyWith({
+  LessonEntity copyWith({
     int? id,
     String? name,
     String? place,
@@ -123,7 +107,7 @@ class Lesson {
     TimeOfDay? timeEnd,
     LessonType? type,
   }) {
-    return Lesson(
+    return LessonEntity(
       id: id ?? this.id,
       name: name ?? this.name,
       place: place ?? this.place,

@@ -5,42 +5,56 @@ import '../models.dart';
 
 /// Провайдер для управления расписанием.
 class ScheduleProvider with ChangeNotifier {
-  final List<Week> _weeks = [];
+  final List<WeekEntity> _weeks = [];
 
-  ScheduleProvider(List<Week> weeks) {
+  ScheduleProvider(List<WeekEntity> weeks) {
     if (weeks.isNotEmpty) {
       _weeks.addAll(weeks);
     } else {
-      _weeks.add(Week(
+      _weeks.add(WeekEntity(
         number: 1,
         days: List.generate(
           6,
-          (index) => Day(dayOfWeek: DayOfWeek.values[index]),
+          (index) => DayEntity(dayOfWeek: DayOfWeek.values[index]),
         ),
       ));
     }
   }
 
   /// Список недель.
-  List<Week> get weeks => _weeks;
+  List<WeekEntity> get weeks => _weeks;
 
   /// Расписание корректно, если все дни в неделях не пусты.
   bool get isCorrect => _weeks.every((week) => week.isCorrect);
 
+  /// Проверить расписание.
+  String? verifySchedule() {
+    if (weeks.isEmpty) {
+      return 'Добавьте хотя бы одну неделю';
+    } else if (weeks.any((week) => !week.isCorrect)) {
+      final incorrectWeeks = weeks
+          .where((week) => !week.isCorrect)
+          .map((week) => week.number)
+          .join(', ');
+      return 'В расписании есть одна или несколько недель ($incorrectWeeks), в которой нет ни одного занятия. Удалите её или добавьте занятия.';
+    }
+    return null;
+  }
+
   /// Добавить неделю.
   void addWeek() {
-    _weeks.add(Week(
+    _weeks.add(WeekEntity(
       number: _weeks.length + 1,
       days: List.generate(
         6,
-        (index) => Day(dayOfWeek: DayOfWeek.values[index]),
+        (index) => DayEntity(dayOfWeek: DayOfWeek.values[index]),
       ),
     ));
     notifyListeners();
   }
 
   /// Обновить неделю.
-  void updateWeek(int index, Week week) {
+  void updateWeek(int index, WeekEntity week) {
     _weeks[index] = week;
     notifyListeners();
   }
@@ -71,7 +85,7 @@ class ScheduleProvider with ChangeNotifier {
     int weekIndex,
     int dayIndex,
     int lessonIndex,
-    Lesson lesson,
+    LessonEntity lesson,
   ) {
     _weeks[weekIndex].days[dayIndex].lessons[lessonIndex] = lesson;
     notifyListeners();

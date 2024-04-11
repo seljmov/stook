@@ -14,11 +14,11 @@ class DayCard extends StatelessWidget {
     required this.onUpdateDay,
   });
 
-  final Day day;
-  final void Function(Day day) onAddLesson;
-  final void Function(Day day) onUpdateDay;
+  final DayEntity day;
+  final void Function(DayEntity day) onAddLesson;
+  final void Function(DayEntity day) onUpdateDay;
 
-  String? _updateLesson(Lesson lesson, void Function() onUpdateLesson) {
+  String? _updateLesson(LessonEntity lesson, void Function() onUpdateLesson) {
     if (lesson.name.isEmpty) {
       return 'Название занятия не может быть пустым';
     }
@@ -108,7 +108,7 @@ class DayCard extends StatelessWidget {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => LessonPutScreen(
-                          lesson: const Lesson(),
+                          lesson: const LessonEntity(),
                           onLessonUpdate: (lesson) => _updateLesson(lesson, () {
                             day.lessons.add(lesson);
                           }),

@@ -12,9 +12,9 @@ class WeekWidget extends StatelessWidget {
     required this.onWeekRemove,
   });
 
-  final Week week;
-  final void Function(Week updatedWeek) onWeekUpdate;
-  final void Function(Week week) onWeekRemove;
+  final WeekEntity week;
+  final void Function(WeekEntity updatedWeek) onWeekUpdate;
+  final void Function(WeekEntity week) onWeekRemove;
 
   @override
   Widget build(BuildContext context) {

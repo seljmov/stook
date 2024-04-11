@@ -15,10 +15,10 @@ class LessonCard extends StatelessWidget {
   });
 
   final int number;
-  final Lesson lesson;
-  final void Function(Lesson lesson) onLessonEdit;
-  final String? Function(Lesson lesson) onLessonUpdate;
-  final void Function(Lesson lesson) onLessonRemove;
+  final LessonEntity lesson;
+  final void Function(LessonEntity lesson) onLessonEdit;
+  final String? Function(LessonEntity lesson) onLessonUpdate;
+  final void Function(LessonEntity lesson) onLessonRemove;
 
   @override
   Widget build(BuildContext context) {
