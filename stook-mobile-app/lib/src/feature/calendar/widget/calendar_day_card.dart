@@ -14,14 +14,14 @@ class CalendarDayCard extends StatelessWidget {
 
   final CalendarDayEntity day;
 
-  String upWordsFirstLetter(String str) {
+  String _upWordsFirstLetter(String str) {
     return str
         .split(' ')
         .map((word) => word[0].toUpperCase() + word.substring(1))
         .join(' ');
   }
 
-  String lessonsCount(int count) {
+  String _lessonsCount(int count) {
     if (count == 0) {
       return 'занятий нет';
     } else if (count == 1) {
@@ -45,7 +45,7 @@ class CalendarDayCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                upWordsFirstLetter(
+                _upWordsFirstLetter(
                     kCalendarDayOfWeekFormatter.format(day.date)),
                 style: day.date.isToday || day.lessons.isNotEmpty
                     ? Theme.of(context).textTheme.headlineSmall!.copyWith(
@@ -61,14 +61,14 @@ class CalendarDayCard extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    "${upWordsFirstLetter(kCalendarDateFormatter.format(day.date))} - ",
+                    "${_upWordsFirstLetter(kCalendarDateFormatter.format(day.date))} - ",
                     style: Theme.of(context)
                         .textTheme
                         .labelMedium!
                         .copyWith(color: Colors.grey.shade600),
                   ),
                   Text(
-                    lessonsCount(day.lessons.length),
+                    _lessonsCount(day.lessons.length),
                     style: Theme.of(context)
                         .textTheme
                         .labelMedium!

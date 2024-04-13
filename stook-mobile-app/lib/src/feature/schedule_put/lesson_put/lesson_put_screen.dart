@@ -85,7 +85,6 @@ class _LessonPutScreenState extends State<LessonPutScreen> {
                     return;
                   }
 
-                  debugPrint('lessonType: ${lessonTypeNotifier.value}');
                   final updatedLesson = widget.lesson.copyWith(
                     id: widget.lesson.id,
                     name: nameController.text.trim(),
@@ -230,6 +229,7 @@ class _LessonPutScreenState extends State<LessonPutScreen> {
   }
 }
 
+/// Виджет для выбора времени начала и конца занятия.
 class LessonTimesWidget extends StatelessWidget {
   const LessonTimesWidget({
     super.key,

@@ -7,14 +7,12 @@ import 'lesson_type_card.dart';
 class LessonCard extends StatelessWidget {
   const LessonCard({
     super.key,
-    required this.number,
     required this.lesson,
     required this.onLessonEdit,
     required this.onLessonUpdate,
     required this.onLessonRemove,
   });
 
-  final int number;
   final LessonEntity lesson;
   final void Function(LessonEntity lesson) onLessonEdit;
   final String? Function(LessonEntity lesson) onLessonUpdate;
@@ -48,7 +46,6 @@ class LessonCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // lesson times
                   Padding(
                     padding: const EdgeInsets.only(
                       left: 8.0,

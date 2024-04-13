@@ -72,7 +72,6 @@ class DayCard extends StatelessWidget {
                         horizontal: 16,
                       ),
                       child: LessonCard(
-                        number: day.lessons.indexOf(lesson) + 1,
                         lesson: lesson,
                         onLessonEdit: (lesson) {
                           Navigator.of(context).push(
