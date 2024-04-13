@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart' as bloc_concurrency;
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
 import 'src/common/infrastructure/bloc_global_observer.dart';
@@ -9,9 +10,10 @@ import 'src/common/widget/app.dart';
 import 'src/feature/schedule_put/bloc/schedule_put_bloc.dart';
 
 /// Точка входа в приложение.
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   DiConfigurator.configure();
+  await initializeDateFormatting('ru_RU', null);
   Bloc.observer = BlocGlobalObserver();
   Bloc.transformer = bloc_concurrency.sequential();
   runApp(const MyApp());
