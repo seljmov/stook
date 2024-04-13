@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:octopus/octopus.dart';
-import 'package:stook_database/database_context.dart';
 
 import '../../common/router/routes.dart';
 import 'bloc/calendar_bloc.dart';
@@ -11,9 +10,7 @@ import 'widget/calendar_day_card.dart';
 
 /// Экран календаря.
 class CalendarScreen extends StatefulWidget {
-  const CalendarScreen({super.key, required this.databaseContext});
-
-  final DatabaseContext databaseContext;
+  const CalendarScreen({super.key});
 
   @override
   State<CalendarScreen> createState() => _CalendarScreenState();
@@ -39,8 +36,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         ],
       ),
       body: BlocConsumer<ICalendarBloc, CalendarState>(
-        bloc: CalendarBloc(databaseContext: widget.databaseContext)
-          ..add(const CalendarEvent.load()),
+        bloc: CalendarScope.of(context)..add(const CalendarEvent.load()),
         listener: (context, state) {
           state.mapOrNull(
             initial: (_) => CalendarScope.load(context),

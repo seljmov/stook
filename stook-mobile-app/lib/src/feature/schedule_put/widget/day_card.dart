@@ -6,6 +6,7 @@ import '../lesson_put/lesson_put_screen.dart';
 import '../models.dart';
 import 'lesson_card.dart';
 
+/// Карточка дня в расписании.
 class DayCard extends StatelessWidget {
   const DayCard({
     super.key,
@@ -21,6 +22,10 @@ class DayCard extends StatelessWidget {
   String? _updateLesson(LessonEntity lesson, void Function() onUpdateLesson) {
     if (lesson.name.isEmpty) {
       return 'Название занятия не может быть пустым';
+    }
+
+    if (day.lessons.any((l) => l.id != lesson.id && l.name == lesson.name)) {
+      return 'Занятие с таким названием уже существует';
     }
 
     final intersectedLesson = day.lessons.firstWhereOrNull(
@@ -110,7 +115,10 @@ class DayCard extends StatelessWidget {
                         builder: (context) => LessonPutScreen(
                           lesson: const LessonEntity(),
                           onLessonUpdate: (lesson) => _updateLesson(lesson, () {
-                            day.lessons.add(lesson);
+                            final newLesson = lesson.copyWith(
+                              id: DateTime.now().microsecondsSinceEpoch,
+                            );
+                            day.lessons.add(newLesson);
                           }),
                         ),
                       ),

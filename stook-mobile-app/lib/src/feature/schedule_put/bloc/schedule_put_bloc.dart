@@ -102,9 +102,7 @@ class SchedulePutBloc extends ISchedulePutBloc {
       await _databaseContext.lessonsDao.insertLessonsCompanions(lessons);
       final prefs = await SharedPreferences.getInstance();
       await prefs.setInt('currentWeekNumber', event.currentWeekNumber);
-      debugPrint('currentWeekNumber: ${event.currentWeekNumber}');
       await prefs.setString('currentDate', DateTime.now().toString());
-
       emit(const SchedulePutState.loaderHide());
       emit(const SchedulePutState.successUpdate());
     } catch (e) {

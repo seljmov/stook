@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:stook_database/database_context.dart';
 
 import '../../common/extension/scaffold_x.dart';
 import 'bloc/schedule_put_bloc.dart';
@@ -13,12 +12,7 @@ import 'widget/week_widget.dart';
 
 /// Экран для указания расписания.
 class SchedulePutScreen extends StatefulWidget {
-  const SchedulePutScreen({
-    super.key,
-    required this.databaseContext,
-  });
-
-  final DatabaseContext databaseContext;
+  const SchedulePutScreen({super.key});
 
   @override
   State<SchedulePutScreen> createState() => _SchedulePutScreenState();
