@@ -7,6 +7,7 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'src/common/infrastructure/bloc_global_observer.dart';
 import 'src/common/infrastructure/di_configurator.dart';
 import 'src/common/widget/app.dart';
+import 'src/feature/calendar/bloc/calendar_bloc.dart';
 import 'src/feature/schedule_put/bloc/schedule_put_bloc.dart';
 
 /// Точка входа в приложение.
@@ -29,6 +30,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<ISchedulePutBloc>(
           create: (context) => injector.get<ISchedulePutBloc>(),
+        ),
+        BlocProvider<ICalendarBloc>(
+          create: (context) => injector.get<ICalendarBloc>(),
         ),
       ],
       child: MaterialApp(

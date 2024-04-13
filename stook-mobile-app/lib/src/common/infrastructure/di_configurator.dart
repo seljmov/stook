@@ -1,6 +1,7 @@
 import 'package:injector/injector.dart';
 import 'package:stook_database/database_context.dart';
 
+import '../../feature/calendar/bloc/calendar_bloc.dart';
 import '../../feature/schedule_put/bloc/schedule_put_bloc.dart';
 
 /// Глобальный инжектор.
@@ -13,6 +14,9 @@ class DiConfigurator {
     injector.registerSingleton<DatabaseContext>(() => DatabaseContext());
     injector.registerDependency<ISchedulePutBloc>(
       () => SchedulePutBloc(databaseContext: injector.get<DatabaseContext>()),
+    );
+    injector.registerDependency<ICalendarBloc>(
+      () => CalendarBloc(databaseContext: injector.get<DatabaseContext>()),
     );
   }
 }
