@@ -6,7 +6,7 @@ import 'package:stook_database/database_context.dart';
 import '../../feature/home/home_screen.dart';
 import '../../feature/notes/notes_screen.dart';
 import '../../feature/resources/resources_screen.dart';
-import '../../feature/schedule/schedule_screen.dart';
+import '../../feature/calendar/schedule_screen.dart';
 import '../../feature/schedule_put/schedule_put_screen.dart';
 import '../../feature/tasks/tasks_screen.dart';
 import '../infrastructure/di_configurator.dart';
@@ -14,7 +14,7 @@ import '../infrastructure/di_configurator.dart';
 /// Маршруты приложения.
 enum Routes with OctopusRoute {
   home('home'),
-  schedule('schedule'),
+  calendar('calendar'),
   schedulePut('schedulePut'),
   tasks('tasks'),
   resources('resources'),
@@ -29,7 +29,7 @@ enum Routes with OctopusRoute {
   Widget builder(BuildContext context, OctopusState state, OctopusNode node) =>
       switch (this) {
         Routes.home => const HomeScreen(),
-        Routes.schedule => CalendarScreen(
+        Routes.calendar => CalendarScreen(
             databaseContext: injector.get<DatabaseContext>(),
           ),
         Routes.schedulePut => SchedulePutScreen(
