@@ -6,7 +6,7 @@ import 'package:stook_database/database_context.dart';
 import '../../feature/home/home_screen.dart';
 import '../../feature/notes/notes_screen.dart';
 import '../../feature/resources/resources_screen.dart';
-import '../../feature/calendar/schedule_screen.dart';
+import '../../feature/calendar/calendar_screen.dart';
 import '../../feature/schedule_put/schedule_put_screen.dart';
 import '../../feature/tasks/tasks_screen.dart';
 import '../infrastructure/di_configurator.dart';

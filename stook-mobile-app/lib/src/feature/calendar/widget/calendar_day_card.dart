@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../common/constants/constants.dart';
+import '../../../common/extension/date_time_x.dart';
 import '../models.dart';
 import 'calendar_lesson_card.dart';
 
@@ -46,7 +47,7 @@ class CalendarDayCard extends StatelessWidget {
               Text(
                 upWordsFirstLetter(
                     kCalendarDayOfWeekFormatter.format(day.date)),
-                style: day.lessons.isNotEmpty
+                style: day.date.isToday || day.lessons.isNotEmpty
                     ? Theme.of(context).textTheme.headlineSmall!.copyWith(
                           color: Colors.deepPurple,
                           fontSize: 20,
