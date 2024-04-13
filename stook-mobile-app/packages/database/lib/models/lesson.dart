@@ -5,11 +5,6 @@ import 'enums/lesson_type.dart';
 
 /// Таблица занятий.
 @DataClassName('Lesson')
-@TableIndex(
-  name: 'lesson_index',
-  unique: true,
-  columns: {#number, #weekNumber, #dayOfWeek},
-)
 class Lessons extends Table {
   /// Идентификатор.
   IntColumn get id => integer().autoIncrement()();
@@ -17,8 +12,17 @@ class Lessons extends Table {
   /// Название.
   TextColumn get title => text()();
 
-  /// Номер.
-  IntColumn get number => integer()();
+  /// Место проведения.
+  TextColumn get place => text()();
+
+  /// Преподаватель.
+  TextColumn get teacher => text()();
+
+  /// Время начала.
+  DateTimeColumn get timeStart => dateTime()();
+
+  /// Время окончания.
+  DateTimeColumn get timeEnd => dateTime()();
 
   /// Номер недели.
   IntColumn get weekNumber => integer()();

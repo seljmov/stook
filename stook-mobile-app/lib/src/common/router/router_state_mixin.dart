@@ -11,7 +11,7 @@ mixin RouterStateMixin<T extends StatefulWidget> on State<T> {
   void initState() {
     router = Octopus(
       routes: Routes.values,
-      defaultRoute: Routes.home,
+      defaultRoute: Routes.calendar,
     );
     super.initState();
   }
