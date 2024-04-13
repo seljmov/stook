@@ -4,6 +4,7 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:octopus/octopus.dart';
 
 import '../../common/router/routes.dart';
+import '../schedule_put/schedule_put_screen.dart';
 import 'bloc/calendar_bloc.dart';
 import 'bloc/calendar_scrope.dart';
 import 'widget/calendar_day_card.dart';
@@ -31,7 +32,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
               size: 24,
               color: Colors.grey.shade700,
             ),
-            onPressed: () => context.octopus.push(Routes.schedulePut),
+            onPressed: () => Navigator.of(context)
+                .push(MaterialPageRoute(
+                    builder: (context) => const SchedulePutScreen()))
+                .whenComplete(() => CalendarScope.load(context)),
           ),
         ],
       ),
@@ -42,7 +46,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
             initial: (_) => CalendarScope.load(context),
             loaderShow: (_) => context.loaderOverlay.show(),
             loaderHide: (_) => context.loaderOverlay.hide(),
-            scheduleOpened: (_) => context.octopus.push(Routes.schedulePut),
+            scheduleOpened: (_) => context.octopus
+                .push(Routes.schedulePut)
+                .whenComplete(() => CalendarScope.load(context)),
           );
         },
         builder: (context, state) {
