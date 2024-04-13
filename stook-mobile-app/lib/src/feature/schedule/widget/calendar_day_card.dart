@@ -11,7 +11,7 @@ class CalendarDayCard extends StatelessWidget {
     required this.day,
   });
 
-  final ScheduleDayEntity day;
+  final CalendarDayEntity day;
 
   String upWordsFirstLetter(String str) {
     return str

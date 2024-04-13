@@ -29,7 +29,7 @@ enum Routes with OctopusRoute {
   Widget builder(BuildContext context, OctopusState state, OctopusNode node) =>
       switch (this) {
         Routes.home => const HomeScreen(),
-        Routes.schedule => ScheduleScreen(
+        Routes.schedule => CalendarScreen(
             databaseContext: injector.get<DatabaseContext>(),
           ),
         Routes.schedulePut => SchedulePutScreen(

@@ -6,18 +6,18 @@ import 'package:stook_database/database_context.dart';
 import 'models.dart';
 import 'widget/calendar_day_card.dart';
 
-/// TODO: Переименовать в календарь.
-class ScheduleScreen extends StatefulWidget {
-  const ScheduleScreen({super.key, required this.databaseContext});
+/// Экран календаря.
+class CalendarScreen extends StatefulWidget {
+  const CalendarScreen({super.key, required this.databaseContext});
 
   final DatabaseContext databaseContext;
 
   @override
-  State<ScheduleScreen> createState() => _ScheduleScreenState();
+  State<CalendarScreen> createState() => _CalendarScreenState();
 }
 
-class _ScheduleScreenState extends State<ScheduleScreen> {
-  Future<List<ScheduleDayEntity>> getScheduleFromDatabase() async {
+class _CalendarScreenState extends State<CalendarScreen> {
+  Future<List<CalendarDayEntity>> getScheduleFromDatabase() async {
     final lessons = await widget.databaseContext.lessonsDao.getAllLessons();
     final lessonsByWeek = lessons.groupListsBy((lessons) => lessons.weekNumber);
 
@@ -31,7 +31,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     );
     currentWeekNumber =
         (currentWeekNumber + weeksBetween) % lessonsByWeek.length;
-    final scheduleDays = <ScheduleDayEntity>[];
+    final scheduleDays = <CalendarDayEntity>[];
     for (var i = 0; i < 14; i++) {
       final date = DateTime.now().add(Duration(days: i));
       final dayOfWeek = date.weekday;
@@ -39,12 +39,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               ?.groupListsBy((lesson) => lesson.dayOfWeek.index + 1) ??
           {};
       final lessons = lessonsByDay[dayOfWeek] ?? [];
-      final scheduleDay = ScheduleDayEntity(
+      final scheduleDay = CalendarDayEntity(
         date: date,
         lessons: lessons
             .where((lesson) => lesson.weekNumber == currentWeekNumber)
             .map((lesson) {
-          return ScheduleLessonEntity(
+          return CalendarLessonEntity(
             name: lesson.title,
             place: lesson.place,
             teacher: lesson.teacher,
@@ -67,7 +67,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     return scheduleDays;
   }
 
-  // count weeks between two dates
   int countWeeks(DateTime date1, DateTime date2) {
     final difference = date1.difference(date2).inDays;
     return (difference / 7).ceil();
@@ -81,11 +80,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         centerTitle: false,
         surfaceTintColor: Colors.transparent,
       ),
-      body: FutureBuilder<List<ScheduleDayEntity>>(
+      body: FutureBuilder<List<CalendarDayEntity>>(
         future: getScheduleFromDatabase(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            // days with paddings
             return ListView(
               children: snapshot.data!
                   .map((day) => Padding(

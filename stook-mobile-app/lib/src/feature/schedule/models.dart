@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:stook_database/models/enums/enums.dart';
 
 /// День расписания.
-class ScheduleDayEntity {
+class CalendarDayEntity {
   final DateTime date;
-  final List<ScheduleLessonEntity> lessons;
+  final List<CalendarLessonEntity> lessons;
 
-  const ScheduleDayEntity({required this.date, required this.lessons});
+  const CalendarDayEntity({required this.date, required this.lessons});
 }
 
 /// Занятие календаря.
-class ScheduleLessonEntity {
+class CalendarLessonEntity {
   final String name;
   final String place;
   final String teacher;
@@ -18,7 +18,7 @@ class ScheduleLessonEntity {
   final TimeOfDay timeEnd;
   final LessonType type;
 
-  const ScheduleLessonEntity({
+  const CalendarLessonEntity({
     required this.name,
     required this.place,
     required this.teacher,

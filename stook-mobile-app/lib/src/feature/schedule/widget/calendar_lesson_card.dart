@@ -9,7 +9,7 @@ class CalendarLessonDay extends StatelessWidget {
     required this.lesson,
   });
 
-  final ScheduleLessonEntity lesson;
+  final CalendarLessonEntity lesson;
 
   @override
   Widget build(BuildContext context) {
