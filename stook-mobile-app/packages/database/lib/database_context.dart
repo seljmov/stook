@@ -5,30 +5,49 @@ import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
+import 'package:stook_database/models/task_subtask_relation.dart';
 
-import 'daos/lesson_dao.dart';
+import 'daos/lesson_dao/lesson_dao.dart';
+import 'daos/task_dao/task_dao.dart';
+import 'daos/task_depend_on_relation_dao/task_depend_on_relation_dao.dart';
+import 'daos/task_subtask_relation_dao/task_subtask_relation_dao.dart';
 import 'models/enums/day_of_week.dart';
 import 'models/enums/lesson_type.dart';
 import 'models/enums/resource_type.dart';
 import 'models/enums/task_priority.dart';
+import 'models/enums/task_status.dart';
 import 'models/lesson.dart';
 import 'models/note.dart';
 import 'models/resource.dart';
 import 'models/schedule.dart';
 import 'models/task.dart';
+import 'models/task_depend_on_relation.dart';
 
 part 'database_context.g.dart';
 
 /// Контекст базы данных.
 @DriftDatabase(
-  tables: [Lessons, Tasks, Resources, Notes, Schedules],
-  daos: [LessonsDao],
+  tables: [
+    Lessons,
+    Tasks,
+    Resources,
+    Notes,
+    Schedules,
+    TaskSubtaskRelations,
+    TaskDependOnRelations,
+  ],
+  daos: [
+    LessonsDao,
+    TasksDao,
+    TaskSubtaskRelationsDao,
+    TaskDependOnRelationsDao,
+  ],
 )
 class DatabaseContext extends _$DatabaseContext {
   DatabaseContext() : super(_openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(

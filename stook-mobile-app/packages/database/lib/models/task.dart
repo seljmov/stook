@@ -1,6 +1,5 @@
 import 'package:drift/drift.dart';
-
-import 'enums/task_priority.dart';
+import 'package:stook_database/models/enums/enums.dart';
 
 /// Таблица задач.
 @DataClassName('Task')
@@ -27,4 +26,7 @@ class Tasks extends Table {
 
   /// Приоритет.
   IntColumn get priority => intEnum<TaskPriority>()();
+
+  /// Статус.
+  IntColumn get status => intEnum<TaskStatus>()();
 }

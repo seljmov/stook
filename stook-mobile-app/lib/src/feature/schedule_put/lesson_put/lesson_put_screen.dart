@@ -32,7 +32,6 @@ class _LessonPutScreenState extends State<LessonPutScreen> {
     nameController.text = widget.lesson.name;
     teacherController.text = widget.lesson.teacher;
     placeController.text = widget.lesson.place;
-
     startNotifier.value = widget.lesson.timeStart;
     endNotifier.value = widget.lesson.timeEnd;
     lessonTypeNotifier.value = widget.lesson.type;
@@ -44,6 +43,9 @@ class _LessonPutScreenState extends State<LessonPutScreen> {
     nameController.dispose();
     teacherController.dispose();
     placeController.dispose();
+    startNotifier.dispose();
+    endNotifier.dispose();
+    lessonTypeNotifier.dispose();
     super.dispose();
   }
 

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// Приоритет задачи.
 enum TaskPriority {
   /// Нужно сделать как можно быстрее.
@@ -30,11 +32,39 @@ extension TaskPriorityExtension on TaskPriority {
   String get description {
     switch (this) {
       case TaskPriority.A:
-        return 'Нужно сделать как можно быстрее';
+        return 'Очень важно сделать задачу приоритета "A" как можно быстрее (важно и срочно)';
       case TaskPriority.B:
-        return 'Нужно сделать в ближайшее время';
+        return 'Важно сделать задачу приоритета "B" в ближайшее время (важно, но не срочно)';
       case TaskPriority.C:
-        return 'Нужно сделать, когда будет свободное время';
+        return 'Важно сделать задачу приоритета "C" когда будет свободное время (не важно, но срочно)';
+      default:
+        throw Exception('Unknown task priority: $this');
+    }
+  }
+
+  /// Возвращает цвет приоритета.
+  Color get color {
+    switch (this) {
+      case TaskPriority.A:
+        return Colors.redAccent;
+      case TaskPriority.B:
+        return Colors.blueAccent;
+      case TaskPriority.C:
+        return Colors.green;
+      default:
+        throw Exception('Unknown task priority: $this');
+    }
+  }
+
+  /// Возвращает числовое значение приоритета.
+  int get toPriorityNumber {
+    switch (this) {
+      case TaskPriority.A:
+        return 9;
+      case TaskPriority.B:
+        return 5;
+      case TaskPriority.C:
+        return 1;
       default:
         throw Exception('Unknown task priority: $this');
     }

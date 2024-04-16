@@ -6,7 +6,7 @@ import 'package:octopus/octopus.dart';
 import '../../common/router/routes.dart';
 import '../schedule_put/schedule_put_screen.dart';
 import 'bloc/calendar_bloc.dart';
-import 'bloc/calendar_scrope.dart';
+import 'bloc/calendar_scope.dart';
 import 'widget/calendar_day_card.dart';
 
 /// Экран календаря.
