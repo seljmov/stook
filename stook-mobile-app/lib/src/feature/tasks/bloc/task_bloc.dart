@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stook_database/database_context.dart';
@@ -81,6 +80,7 @@ class TaskBloc extends ITaskBloc {
           .deleteTaskDependOnRelations(event.task.id);
       await _databaseContext.taskSubtaskRelationsDao
           .deleteTaskSubtaskRelations(event.task.id);
+
       final dependOnrelations =
           event.task.dependOnTasksIds.map((dependOnTaskId) {
         return TaskDependOnRelation(

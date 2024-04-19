@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stook_database/models/enums/task_priority.dart';
 
@@ -11,11 +10,11 @@ class TaskCard extends StatelessWidget {
   const TaskCard({
     super.key,
     required this.task,
-    required this.onPressed,
+    this.onPressed,
   });
 
   final TaskBaseEntity task;
-  final void Function(TaskBaseEntity task) onPressed;
+  final void Function(TaskBaseEntity task)? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -45,19 +44,22 @@ class TaskCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 8.0),
+              const SizedBox(height: 2.0),
               Text(task.title),
-              const SizedBox(height: 4.0),
+              const SizedBox(height: 2.0),
               Text('Крайний срок: ${kDateFormat.format(task.deadlineDate)}'),
             ],
           ),
         ),
-        IconButton(
-          onPressed: () => onPressed(task),
-          icon: Icon(
-            Icons.arrow_forward_ios_outlined,
-            size: 16,
-            color: Colors.grey.shade700,
+        Visibility(
+          visible: onPressed != null,
+          child: IconButton(
+            onPressed: () => onPressed?.call(task),
+            icon: Icon(
+              Icons.arrow_forward_ios_outlined,
+              size: 16,
+              color: Colors.grey.shade700,
+            ),
           ),
         ),
       ],
