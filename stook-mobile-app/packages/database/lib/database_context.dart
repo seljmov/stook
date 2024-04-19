@@ -61,9 +61,7 @@ class DatabaseContext extends _$DatabaseContext {
             await migrator.createTable(taskSubtaskRelations);
           }
           if (from == 7) {
-            // remove Task table
             await migrator.deleteTable(tasks.actualTableName);
-            // create new Task table
             await migrator.createTable(tasks);
           }
         },

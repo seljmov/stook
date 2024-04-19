@@ -546,6 +546,7 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
   }
 }
 
+/// Мультивыбор задач.
 class BottomSheepMultiSelector {
   static Future<List<int>> show(
     BuildContext context, {

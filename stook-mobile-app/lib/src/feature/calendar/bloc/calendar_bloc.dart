@@ -37,7 +37,6 @@ class CalendarBloc extends ICalendarBloc {
     final tasks = await _getTasksBeforeDate(
       DateTime.now().add(const Duration(days: 21)),
     );
-    debugPrint('tasks: ${tasks.map((e) => e.deadlineDate).toList()}');
     final lessons = await _databaseContext.lessonsDao.getAllLessons();
     if (lessons.isEmpty) {
       emit(const CalendarState.loaderHide());
