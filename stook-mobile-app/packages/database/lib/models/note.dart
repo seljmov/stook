@@ -2,11 +2,6 @@ import 'package:drift/drift.dart';
 
 /// Таблица заметок.
 @DataClassName('Note')
-@TableIndex(
-  name: 'note_index',
-  unique: true,
-  columns: {#isFavorite},
-)
 class Notes extends Table {
   /// Идентификатор.
   IntColumn get id => integer().autoIncrement()();

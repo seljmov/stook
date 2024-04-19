@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -6,7 +7,7 @@ import 'package:octopus/octopus.dart';
 import '../../common/router/routes.dart';
 import '../schedule_put/schedule_put_screen.dart';
 import 'bloc/calendar_bloc.dart';
-import 'bloc/calendar_scrope.dart';
+import 'bloc/calendar_scope.dart';
 import 'widget/calendar_day_card.dart';
 
 /// Экран календаря.
@@ -54,21 +55,27 @@ class _CalendarScreenState extends State<CalendarScreen> {
         builder: (context, state) {
           return Center(
             child: state.whenOrNull(
-              loaded: (days) => Visibility(
+              loaded: (days, tasks) => Visibility(
                 visible: days.isEmpty,
                 child: const Center(
                   child: Text('Расписание пусто'),
                 ),
-                replacement: ListView.builder(
-                  itemCount: days.length,
-                  itemBuilder: (context, index) {
-                    final day = days[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 24.0),
-                      child: CalendarDayCard(day: day),
-                    );
-                  },
-                ),
+                replacement: Builder(builder: (context) {
+                  final tasksByDay = tasks.groupListsBy(
+                    (task) => task.deadlineDate,
+                  );
+                  return ListView.builder(
+                    itemCount: days.length,
+                    itemBuilder: (context, index) {
+                      final day = days[index];
+                      final tasks = tasksByDay[day.date] ?? [];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 24.0),
+                        child: CalendarDayCard(day: day, tasks: tasks),
+                      );
+                    },
+                  );
+                }),
               ),
             ),
           );

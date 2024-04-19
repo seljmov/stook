@@ -34,10 +34,13 @@ class CalendarBloc extends ICalendarBloc {
     Emitter<CalendarState> emit,
   ) async {
     emit(const CalendarState.loaderShow());
+    final tasks = await _getTasksBeforeDate(
+      DateTime.now().add(const Duration(days: 21)),
+    );
     final lessons = await _databaseContext.lessonsDao.getAllLessons();
     if (lessons.isEmpty) {
       emit(const CalendarState.loaderHide());
-      emit(const CalendarState.loaded(days: []));
+      emit(CalendarState.loaded(days: [], tasks: tasks));
       return;
     }
 
@@ -55,8 +58,10 @@ class CalendarBloc extends ICalendarBloc {
         (currentWeekNumber + weeksBetween) % lessonsByWeek.length;
 
     final scheduleDays = <CalendarDayEntity>[];
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
     for (var i = 0; i < 21; i++) {
-      final date = DateTime.now().add(Duration(days: i));
+      final date = today.add(Duration(days: i));
       final dayOfWeek = date.weekday;
       final lessonsByDay = lessonsByWeek[currentWeekNumber]
               ?.groupListsBy((lesson) => lesson.dayOfWeek.index + 1) ??
@@ -88,7 +93,7 @@ class CalendarBloc extends ICalendarBloc {
     }
 
     emit(const CalendarState.loaderHide());
-    emit(CalendarState.loaded(days: scheduleDays));
+    emit(CalendarState.loaded(days: scheduleDays, tasks: tasks));
   }
 
   Future<void> _openSchedule(
@@ -99,6 +104,21 @@ class CalendarBloc extends ICalendarBloc {
   int _countWeeks(DateTime date1, DateTime date2) {
     final difference = date1.difference(date2).inDays;
     return (difference / 7).ceil();
+  }
+
+  Future<List<CalendarTaskEntity>> _getTasksBeforeDate(DateTime date) async {
+    final tasks = await _databaseContext.tasksDao.getAllTasks();
+    return tasks
+        .where((task) =>
+            task.deadlineDate != null && task.deadlineDate!.isBefore(date))
+        .map((task) => CalendarTaskEntity(
+              id: task.id,
+              title: task.title,
+              priority: task.priority,
+              status: task.status,
+              deadlineDate: task.deadlineDate ?? DateTime.now(),
+            ))
+        .toList();
   }
 }
 
@@ -127,6 +147,7 @@ abstract class CalendarState with _$CalendarState {
   /// Данные.
   const factory CalendarState.loaded({
     required List<CalendarDayEntity> days,
+    required List<CalendarTaskEntity> tasks,
   }) = _CalendarLoadedState;
 
   /// Открыто расписание.

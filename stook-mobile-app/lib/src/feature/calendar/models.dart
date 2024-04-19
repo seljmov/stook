@@ -27,3 +27,20 @@ class CalendarLessonEntity {
     required this.type,
   });
 }
+
+/// Задача календаря.
+class CalendarTaskEntity {
+  final int id;
+  final String title;
+  final DateTime deadlineDate;
+  final TaskPriority priority;
+  final TaskStatus status;
+
+  const CalendarTaskEntity({
+    required this.id,
+    required this.title,
+    required this.deadlineDate,
+    required this.priority,
+    required this.status,
+  });
+}

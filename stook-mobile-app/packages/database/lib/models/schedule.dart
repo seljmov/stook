@@ -2,11 +2,6 @@ import 'package:drift/drift.dart';
 
 /// Таблица расписания.
 @DataClassName('Schedule')
-@TableIndex(
-  name: 'schedule_index',
-  unique: true,
-  columns: {#isActive},
-)
 class Schedules extends Table {
   /// Идентификатор.
   IntColumn get id => integer().autoIncrement()();

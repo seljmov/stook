@@ -78,6 +78,7 @@ class ScheduleWidget extends StatelessWidget {
             appBar: AppBar(
               title: const Text('Укажите расписание'),
               centerTitle: false,
+              surfaceTintColor: Colors.transparent,
               actions: [
                 Padding(
                   padding: const EdgeInsets.only(right: 12.0),

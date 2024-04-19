@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:stook_database/models/lesson.dart';
 
-import '../database_context.dart';
+import '../../database_context.dart';
 
 part 'lesson_dao.g.dart';
 
