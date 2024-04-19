@@ -19,6 +19,15 @@ class TaskSubtaskRelationsDao extends DatabaseAccessor<DatabaseContext>
     return relations.map((e) => e.subtaskId).toList();
   }
 
+  /// Вставить зависимость задач.
+  Future<int> insertTaskSubtaskRelation(TaskSubtaskRelation relation) =>
+      into(taskSubtaskRelations).insert(relation);
+
+  /// Вставить список зависимостей задач.
+  Future<void> insertTaskSubtaskRelations(
+          List<TaskSubtaskRelation> relations) =>
+      batch((batch) => batch.insertAll(taskSubtaskRelations, relations));
+
   /// Удалить зависимости задач.
   Future<void> deleteTaskSubtaskRelations(int taskId) async {
     await (delete(taskSubtaskRelations)..where((t) => t.taskId.equals(taskId)))

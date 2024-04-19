@@ -1,3 +1,4 @@
+import 'package:stook_database/database_context.dart';
 import 'package:stook_database/models/enums/enums.dart';
 
 /// Сущность задачи.
@@ -47,6 +48,24 @@ class TaskEntity {
       status: status ?? this.status,
       subtasksIds: subtasksIds ?? this.subtasksIds,
       dependOnTasksIds: dependOnTasksIds ?? this.dependOnTasksIds,
+    );
+  }
+
+  /// Создает сущность задачи из базы данных.
+  TasksCompanion toTaskCompanion() {
+    return toTask().toCompanion(false);
+  }
+
+  /// Создает сущность задачи из базы данных.
+  Task toTask() {
+    return Task(
+      id: id,
+      title: title,
+      description: description,
+      createdDate: createdDate,
+      deadlineDate: deadlineDate,
+      priority: priority,
+      status: status,
     );
   }
 }

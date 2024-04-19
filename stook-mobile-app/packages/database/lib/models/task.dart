@@ -3,11 +3,6 @@ import 'package:stook_database/models/enums/enums.dart';
 
 /// Таблица задач.
 @DataClassName('Task')
-@TableIndex(
-  name: 'task_index',
-  unique: true,
-  columns: {#priority},
-)
 class Tasks extends Table {
   /// Идентификатор.
   IntColumn get id => integer().autoIncrement()();

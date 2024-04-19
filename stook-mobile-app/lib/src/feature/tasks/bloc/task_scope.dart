@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:stook_database/database_context.dart';
 
+import '../entities/task_entity.dart';
 import 'task_bloc.dart';
 
 /// Область видимости блока задач.
@@ -17,17 +17,17 @@ abstract class TaskScope {
   }
 
   /// Добавить/изменить задачу.
-  static void openPutTask(BuildContext context, {Task? task}) {
-    of(context).add(TaskEvent.openPutTask(task: task));
+  static void openPutTask(BuildContext context, {int? taskId}) {
+    of(context).add(TaskEvent.openPutTask(taskId: taskId));
   }
 
   /// Сохранить задачу.
-  static void savePuttedTask(BuildContext context, Task task) {
+  static void savePuttedTask(BuildContext context, {required TaskEntity task}) {
     of(context).add(TaskEvent.savePuttedTask(task: task));
   }
 
   /// Удалить задачу.
-  static void deleteTask(BuildContext context, Task task) {
+  static void deleteTask(BuildContext context, TaskEntity task) {
     of(context).add(TaskEvent.deleteTask(task: task));
   }
 }

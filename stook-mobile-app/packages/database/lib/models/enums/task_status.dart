@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// Статус задачи.
 enum TaskStatus {
   /// Задача создана, но еще не начата.
@@ -8,6 +10,9 @@ enum TaskStatus {
 
   /// Задача завершена.
   completed,
+
+  /// Задача просрочена.
+  overdue,
 }
 
 /// Расширение для работы с перечислением [TaskStatus].
@@ -16,11 +21,29 @@ extension TaskStatusExtension on TaskStatus {
   String get name {
     switch (this) {
       case TaskStatus.pending:
-        return 'pending';
+        return 'Создана';
       case TaskStatus.inProgress:
-        return 'inProgress';
+        return 'В процессе';
       case TaskStatus.completed:
-        return 'completed';
+        return 'Завершена';
+      case TaskStatus.overdue:
+        return 'Просрочена';
+      default:
+        throw Exception('Unknown task status: $this');
+    }
+  }
+
+  /// Возвращает цвет для перечисления.
+  Color get color {
+    switch (this) {
+      case TaskStatus.pending:
+        return Colors.blue;
+      case TaskStatus.inProgress:
+        return Colors.orange;
+      case TaskStatus.completed:
+        return Colors.green;
+      case TaskStatus.overdue:
+        return Colors.red;
       default:
         throw Exception('Unknown task status: $this');
     }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:stook_database/database_context.dart';
 import 'package:stook_database/models/enums/enums.dart';
 
 import '../../../common/constants/constants.dart';
 import '../bloc/task_scope.dart';
+import '../entities/task_entity.dart';
 
 /// Страница экрана добавления/изменения задачи.
 class TaskPutScreen extends StatefulWidget {
@@ -13,8 +13,8 @@ class TaskPutScreen extends StatefulWidget {
     this.allTasks = const [],
   });
 
-  final Task? task;
-  final List<Task> allTasks;
+  final TaskEntity? task;
+  final List<TaskEntity> allTasks;
 
   @override
   State<TaskPutScreen> createState() => _TaskPutScreenState();
@@ -25,8 +25,8 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
   final descriptionController = TextEditingController();
   final deadlineNotifier = ValueNotifier<DateTime?>(null);
   final taskPriorityNotifier = ValueNotifier<TaskPriority?>(null);
-  final subTasksNotifier = ValueNotifier<List<Task>>([]);
-  final dependsTasksNotifier = ValueNotifier<List<Task>>([]);
+  final subTasksIdsNotifier = ValueNotifier<List<int>>([]);
+  final dependsTasksIdsNotifier = ValueNotifier<List<int>>([]);
 
   @override
   void initState() {
@@ -35,6 +35,8 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
       descriptionController.text = widget.task!.description;
       deadlineNotifier.value = widget.task!.deadlineDate;
       taskPriorityNotifier.value = widget.task!.priority;
+      subTasksIdsNotifier.value = widget.task!.subtasksIds;
+      dependsTasksIdsNotifier.value = widget.task!.dependOnTasksIds;
     }
     super.initState();
   }
@@ -45,8 +47,8 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
     descriptionController.dispose();
     deadlineNotifier.dispose();
     taskPriorityNotifier.dispose();
-    subTasksNotifier.dispose();
-    dependsTasksNotifier.dispose();
+    subTasksIdsNotifier.dispose();
+    dependsTasksIdsNotifier.dispose();
     super.dispose();
   }
 
@@ -141,16 +143,18 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
                 return;
               }
 
-              final puttedTask = Task(
+              final puttedTask = TaskEntity(
                 id: widget.task?.id ?? DateTime.now().millisecondsSinceEpoch,
                 title: title,
                 description: description,
+                createdDate: widget.task?.createdDate ?? DateTime.now(),
                 deadlineDate: deadline,
                 priority: priority,
-                createdDate: widget.task?.createdDate ?? DateTime.now(),
                 status: widget.task?.status ?? TaskStatus.pending,
+                subtasksIds: subTasksIdsNotifier.value,
+                dependOnTasksIds: dependsTasksIdsNotifier.value,
               );
-              TaskScope.savePuttedTask(context, puttedTask);
+              TaskScope.savePuttedTask(context, task: puttedTask);
               Navigator.of(context).pop();
             },
             icon: const Icon(
@@ -438,18 +442,19 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
                             final filteredTasks = widget.allTasks
                                 .where((task) =>
                                     task.id != widget.task?.id &&
-                                    !dependsTasksNotifier.value.contains(task))
+                                    !dependsTasksIdsNotifier.value
+                                        .contains(task.id))
                                 .toList();
                             final subTasks =
                                 await BottomSheepMultiSelector.show(
                               context,
                               tasks: filteredTasks,
-                              selected: subTasksNotifier.value,
+                              selectedIds: subTasksIdsNotifier.value,
                             );
-                            subTasksNotifier.value = subTasks;
+                            subTasksIdsNotifier.value = subTasks;
                           },
-                          child: ValueListenableBuilder<List<Task>>(
-                            valueListenable: subTasksNotifier,
+                          child: ValueListenableBuilder<List<int>>(
+                            valueListenable: subTasksIdsNotifier,
                             builder: (context, subTasks, child) {
                               return Text(
                                 subTasks.isEmpty
@@ -500,18 +505,19 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
                             final filteredTasks = widget.allTasks
                                 .where((task) =>
                                     task.id != widget.task?.id &&
-                                    !subTasksNotifier.value.contains(task))
+                                    !subTasksIdsNotifier.value
+                                        .contains(task.id))
                                 .toList();
                             final dependsTasks =
                                 await BottomSheepMultiSelector.show(
                               context,
                               tasks: filteredTasks,
-                              selected: dependsTasksNotifier.value,
+                              selectedIds: dependsTasksIdsNotifier.value,
                             );
-                            dependsTasksNotifier.value = dependsTasks;
+                            dependsTasksIdsNotifier.value = dependsTasks;
                           },
-                          child: ValueListenableBuilder<List<Task>>(
-                            valueListenable: dependsTasksNotifier,
+                          child: ValueListenableBuilder<List<int>>(
+                            valueListenable: dependsTasksIdsNotifier,
                             builder: (context, dependsTasks, child) {
                               return Text(
                                 dependsTasks.isEmpty
@@ -541,12 +547,14 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
 }
 
 class BottomSheepMultiSelector {
-  static Future<List<Task>> show(
+  static Future<List<int>> show(
     BuildContext context, {
-    required List<Task> tasks,
-    List<Task> selected = const [],
+    required List<TaskEntity> tasks,
+    List<int> selectedIds = const [],
   }) async {
-    final selectedTasksNotifier = ValueNotifier<List<Task>>(selected);
+    final selectedTasksNotifier = ValueNotifier<List<TaskEntity>>(
+      tasks.where((task) => selectedIds.contains(task.id)).toList(),
+    );
     await showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -657,6 +665,6 @@ class BottomSheepMultiSelector {
         );
       },
     );
-    return selectedTasksNotifier.value;
+    return selectedTasksNotifier.value.map((task) => task.id).toList();
   }
 }

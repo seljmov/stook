@@ -1,10 +1,14 @@
+import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:stook_database/database_context.dart';
 
+import '../../common/infrastructure/di_configurator.dart';
 import 'bloc/task_bloc.dart';
 import 'bloc/task_scope.dart';
 import 'task_put/task_put_screen.dart';
+import 'widget/task_card.dart';
 
 /// Страница экрана задач.
 class TasksScreen extends StatelessWidget {
@@ -21,8 +25,9 @@ class TasksScreen extends StatelessWidget {
           loaderHide: (_) => context.loaderOverlay.hide(),
           openPutTaskScreen: (state) => Navigator.of(context)
               .push(MaterialPageRoute(
-                  builder: (context) => TaskPutScreen(
-                      task: state.task, allTasks: state.allTasks)))
+                builder: (context) =>
+                    TaskPutScreen(task: state.task, allTasks: state.allTasks),
+              ))
               .whenComplete(() => TaskScope.load(context)),
         );
       },
@@ -32,6 +37,18 @@ class TasksScreen extends StatelessWidget {
             title: const Text('Задачи'),
             centerTitle: false,
             surfaceTintColor: Colors.transparent,
+            actions: [
+              IconButton(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => DriftDbViewer(
+                      injector.get<DatabaseContext>(),
+                    ),
+                  ),
+                ),
+                icon: const Icon(Icons.insert_comment_sharp),
+              ),
+            ],
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () => TaskScope.openPutTask(context),
@@ -40,13 +57,11 @@ class TasksScreen extends StatelessWidget {
           body: Center(
             child: state.whenOrNull(
               loaded: (tasks) {
-                // desc sort tasks by created date, but createdDate can be null
                 final sortedTasks = tasks.toList();
-                sortedTasks.sort((a, b) {
-                  final aDate = a.createdDate ?? DateTime(0);
-                  final bDate = b.createdDate ?? DateTime(0);
-                  return bDate.compareTo(aDate);
-                });
+                sortedTasks.sort(
+                  (a, b) => a.createdDate.compareTo(b.createdDate),
+                );
+                final reversedTasks = sortedTasks.reversed.toList();
                 return Visibility(
                   visible: tasks.isEmpty,
                   child: const Center(
@@ -55,12 +70,17 @@ class TasksScreen extends StatelessWidget {
                   replacement: ListView.builder(
                     itemCount: tasks.length,
                     itemBuilder: (context, index) {
-                      final task = tasks[index];
-                      return GestureDetector(
-                        onTap: () => TaskScope.openPutTask(context, task: task),
-                        child: ListTile(
-                          title: Text(task.title),
-                          subtitle: Text(task.description),
+                      final task = reversedTasks[index];
+                      return Padding(
+                        padding:
+                            EdgeInsets.only(top: index != 0 ? 16 : 0).copyWith(
+                          left: 16,
+                          right: 8,
+                        ),
+                        child: TaskCard(
+                          task: task,
+                          onPressed: (task) =>
+                              TaskScope.openPutTask(context, taskId: task.id),
                         ),
                       );
                     },

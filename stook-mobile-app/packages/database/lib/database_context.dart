@@ -47,11 +47,26 @@ class DatabaseContext extends _$DatabaseContext {
   DatabaseContext() : super(_openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onUpgrade: (migrator, from, to) async {},
+        onCreate: (m) async {
+          m.createAll();
+        },
+        onUpgrade: (migrator, from, to) async {
+          if (from == 4) {
+            await migrator.addColumn(tasks, tasks.status);
+            await migrator.createTable(taskDependOnRelations);
+            await migrator.createTable(taskSubtaskRelations);
+          }
+          if (from == 7) {
+            // remove Task table
+            await migrator.deleteTable(tasks.actualTableName);
+            // create new Task table
+            await migrator.createTable(tasks);
+          }
+        },
       );
 }
 

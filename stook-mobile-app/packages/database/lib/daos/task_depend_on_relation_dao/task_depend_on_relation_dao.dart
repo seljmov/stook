@@ -19,6 +19,15 @@ class TaskDependOnRelationsDao extends DatabaseAccessor<DatabaseContext>
     return relations.map((e) => e.dependOnTaskId).toList();
   }
 
+  /// Вставить зависимость задач.
+  Future<int> insertTaskDependOnRelation(TaskDependOnRelation relation) =>
+      into(taskDependOnRelations).insert(relation);
+
+  /// Вставить список зависимостей задач.
+  Future<void> insertTaskDependOnRelations(
+          List<TaskDependOnRelation> relations) =>
+      batch((batch) => batch.insertAll(taskDependOnRelations, relations));
+
   /// Удалить зависимости задач.
   Future<void> deleteTaskDependOnRelations(int taskId) async {
     await (delete(taskDependOnRelations)..where((t) => t.taskId.equals(taskId)))

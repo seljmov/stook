@@ -4,11 +4,6 @@ import 'enums/resource_type.dart';
 
 /// Таблица ресурсов.
 @DataClassName('Resource')
-@TableIndex(
-  name: 'resource_index',
-  unique: true,
-  columns: {#isFavorite},
-)
 class Resources extends Table {
   /// Идентификатор.
   IntColumn get id => integer().autoIncrement()();

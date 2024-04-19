@@ -784,7 +784,7 @@ packages:
       path: "packages/database"
       relative: true
     source: path
-    version: "0.0.3"
+    version: "0.0.7"
   stream_channel:
     dependency: transitive
     description:
