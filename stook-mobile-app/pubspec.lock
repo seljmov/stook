@@ -785,6 +785,13 @@ packages:
       relative: true
     source: path
     version: "0.0.7"
+  stook_importance_algorithm:
+    dependency: "direct main"
+    description:
+      path: "packages/importance_algorithm"
+      relative: true
+    source: path
+    version: "0.0.1"
   stream_channel:
     dependency: transitive
     description:

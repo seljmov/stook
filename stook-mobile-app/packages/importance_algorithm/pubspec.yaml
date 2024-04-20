@@ -1,0 +1,17 @@
+name: stook_importance_algorithm
+description: "A algorithm to calculate the importance of a tasks"
+version: 0.0.2
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.3.2 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
