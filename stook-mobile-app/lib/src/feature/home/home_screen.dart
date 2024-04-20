@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../calendar/calendar_screen.dart';
 import '../notes/notes_screen.dart';
 import '../resources/resources_screen.dart';
-import '../tasks/tasks_screen.dart';
+import '../tasks/tasks_wrapper_screen.dart';
 
 /// Страница домашнего экрана.
 class HomeScreen extends StatelessWidget {
@@ -18,7 +18,7 @@ class HomeScreen extends StatelessWidget {
       ),
     ),
     _NavBarItem(
-      screen: TasksScreen(),
+      screen: TasksWrapperScreen(),
       item: BottomNavigationBarItem(
         icon: Icon(Icons.check),
         label: 'Задачи',
@@ -42,7 +42,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedScreenNotifier = ValueNotifier<int>(0);
+    final selectedScreenNotifier = ValueNotifier<int>(1);
     return ValueListenableBuilder<int>(
       valueListenable: selectedScreenNotifier,
       builder: (context, selectedPage, child) {

@@ -5,14 +5,16 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:stook_database/database_context.dart';
 
 import '../../common/infrastructure/di_configurator.dart';
+import '../../common/widget/thesis_tab_bar.dart';
 import 'bloc/task_bloc.dart';
 import 'bloc/task_scope.dart';
+import 'task_importance/task_importance_screen.dart';
 import 'task_put/task_put_screen.dart';
-import 'widget/task_card.dart';
+import 'widget/tasks_screen.dart';
 
 /// Страница экрана задач.
-class TasksScreen extends StatelessWidget {
-  const TasksScreen({super.key});
+class TasksWrapperScreen extends StatelessWidget {
+  const TasksWrapperScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -56,37 +58,19 @@ class TasksScreen extends StatelessWidget {
           ),
           body: Center(
             child: state.whenOrNull(
-              loaded: (tasks) {
-                final sortedTasks = tasks.toList();
-                sortedTasks.sort(
-                  (a, b) => a.createdDate.compareTo(b.createdDate),
-                );
-                final reversedTasks = sortedTasks.reversed.toList();
-                return Visibility(
-                  visible: tasks.isEmpty,
-                  child: const Center(
-                    child: Text('Задачи пусты'),
-                  ),
-                  replacement: ListView.builder(
-                    itemCount: tasks.length,
-                    itemBuilder: (context, index) {
-                      final task = reversedTasks[index];
-                      return Padding(
-                        padding:
-                            EdgeInsets.only(top: index != 0 ? 16 : 0).copyWith(
-                          left: 16,
-                          right: 8,
-                        ),
-                        child: TaskCard(
-                          task: task,
-                          onPressed: (task) =>
-                              TaskScope.openPutTask(context, taskId: task.id),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
+              loaded: (tasks) => Visibility(
+                visible: tasks.isEmpty,
+                child: const Center(
+                  child: Text('Задачи пусты'),
+                ),
+                replacement: ThesisTabBar(
+                  tabs: const ['Все', 'Важные'],
+                  children: [
+                    TasksScreen(tasks: tasks),
+                    const TaskImportanceScreen(),
+                  ],
+                ),
+              ),
             ),
           ),
         );
