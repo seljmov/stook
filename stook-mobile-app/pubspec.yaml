@@ -22,6 +22,8 @@ dependencies:
   injector: ^3.0.0
   stook_database:
     path: 'packages/database'
+  stook_importance_algorithm:
+    path: 'packages/importance_algorithm'
   drift_db_viewer: ^2.1.0
   equatable: ^2.0.5
   bloc_concurrency: ^0.2.5
