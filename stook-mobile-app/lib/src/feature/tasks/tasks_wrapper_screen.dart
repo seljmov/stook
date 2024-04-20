@@ -58,7 +58,9 @@ class TasksWrapperScreen extends StatelessWidget {
           ),
           body: Center(
             child: state.whenOrNull(
-              loaded: (tasks) => Visibility(
+              loaded: (tasks, mostImportanceTasks,
+                      lastImportanceAlgorithmRunTime) =>
+                  Visibility(
                 visible: tasks.isEmpty,
                 child: const Center(
                   child: Text('Задачи пусты'),
@@ -67,7 +69,11 @@ class TasksWrapperScreen extends StatelessWidget {
                   tabs: const ['Все', 'Важные'],
                   children: [
                     TasksScreen(tasks: tasks),
-                    const TaskImportanceScreen(),
+                    TaskImportanceScreen(
+                      tasks: mostImportanceTasks,
+                      lastImportanceAlgorithmRunTime:
+                          lastImportanceAlgorithmRunTime,
+                    ),
                   ],
                 ),
               ),

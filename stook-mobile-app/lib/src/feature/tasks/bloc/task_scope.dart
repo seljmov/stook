@@ -30,4 +30,9 @@ abstract class TaskScope {
   static void deleteTask(BuildContext context, TaskEntity task) {
     of(context).add(TaskEvent.deleteTask(task: task));
   }
+
+  /// Запустить алгоритм важности.
+  static void runImportanceAlgorithm(BuildContext context) {
+    of(context).add(const TaskEvent.runImportanceAlgorithm());
+  }
 }

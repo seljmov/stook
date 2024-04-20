@@ -1,6 +1,8 @@
 import 'package:stook_database/database_context.dart';
 import 'package:stook_database/models/enums/enums.dart';
 
+import 'task_base_entity.dart';
+
 /// Сущность задачи.
 class TaskEntity {
   final int id;
@@ -48,6 +50,19 @@ class TaskEntity {
       status: status ?? this.status,
       subtasksIds: subtasksIds ?? this.subtasksIds,
       dependOnTasksIds: dependOnTasksIds ?? this.dependOnTasksIds,
+    );
+  }
+
+  /// Создает базовую сущность задачи.
+  TaskBaseEntity toBaseEntity() {
+    return TaskBaseEntity(
+      id: id,
+      title: title,
+      description: description,
+      createdDate: createdDate,
+      deadlineDate: deadlineDate,
+      priority: priority,
+      status: status,
     );
   }
 
