@@ -26,8 +26,11 @@ class AlgorithmSolver<T> implements IAlgorithmSolver<T> {
 
   @override
   List<AlgorithmItem> get(
-      List<T> items, AlgorithmItem Function(T item) getAlgorithmItem,
-      [int count = 3, DateTime? currentDate]) {
+    List<T> items,
+    AlgorithmItem Function(T item) getAlgorithmItem, [
+    int count = 3,
+    DateTime? currentDate,
+  ]) {
     final preparedData = _algorithmDataPreparer.getPreparedData(
       items,
       getAlgorithmItem,

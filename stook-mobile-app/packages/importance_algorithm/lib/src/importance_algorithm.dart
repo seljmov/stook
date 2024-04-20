@@ -42,7 +42,7 @@ class AlgorithmImportance implements IAlgorithmImportance {
 
   /// Получить важность задачи
   double _calculateImportance(AlgorithmItem item, DateTime now) {
-    return (item.priority + item.dependsPriority) /
+    return (item.priority * (item.dependsPriority + 1)) /
         (_findSecondsBetweenDates(now, item.deadlineDate) + 1);
   }
 
