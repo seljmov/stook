@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+/// Возвращает статусы для планирования.
+List<TaskStatus> get planningStatuses =>
+    [TaskStatus.pending, TaskStatus.inProgress];
+
 /// Статус задачи.
 enum TaskStatus {
   /// Задача создана, но еще не начата.

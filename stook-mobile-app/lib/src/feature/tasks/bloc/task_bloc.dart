@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stook_database/database_context.dart';
 import 'package:stook_database/models/enums/task_priority.dart';
+import 'package:stook_database/models/enums/task_status.dart';
 import 'package:stook_importance_algorithm/main.dart';
 
 import '../entities/task_base_entity.dart';
@@ -66,7 +67,9 @@ class TaskBloc extends ITaskBloc {
     Emitter<TaskState> emit,
   ) async {
     emit(const TaskState.loaderShow());
-    final entities = await _getTasks();
+    final entities = (await _getTasks())
+        .where((task) => planningStatuses.contains(task.status))
+        .toList();
     if (event.taskId == null) {
       emit(const TaskState.loaderHide());
       emit(TaskState.openPutTaskScreen(
@@ -187,7 +190,7 @@ class TaskBloc extends ITaskBloc {
     emit(const TaskState.loaderShow());
     final tasks = await _getTasks();
     final mostImportanceTasksItems = await _algorithmSolver.get(
-      tasks,
+      tasks.where((task) => planningStatuses.contains(task.status)).toList(),
       (task) => AlgorithmItem(
           id: task.id,
           deadlineDate: task.deadlineDate,
