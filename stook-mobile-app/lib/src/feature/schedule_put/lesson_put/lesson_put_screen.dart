@@ -336,7 +336,6 @@ class LessonTimesWidget extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      // showTimePicker with ru locale
                       final timeOfDay = await showTimePicker(
                         context: context,
                         initialTime: startNotifier.value?.addMinutes(90) ??
