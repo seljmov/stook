@@ -9,8 +9,8 @@ class TaskEntity {
   final String title;
   final String description;
   final DateTime createdDate;
-  final DateTime deadlineDate;
-  final TaskPriority priority;
+  final DateTime? deadlineDate;
+  final TaskPriority? priority;
   final TaskStatus status;
   final List<int> subtasksIds;
   final List<int> dependOnTasksIds;
@@ -21,8 +21,8 @@ class TaskEntity {
     required this.title,
     required this.description,
     required this.createdDate,
-    required this.deadlineDate,
-    required this.priority,
+    this.deadlineDate,
+    this.priority,
     required this.status,
     this.subtasksIds = const [],
     this.dependOnTasksIds = const [],

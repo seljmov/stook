@@ -6,8 +6,8 @@ class TaskBaseEntity {
   final String title;
   final String description;
   final DateTime createdDate;
-  final DateTime deadlineDate;
-  final TaskPriority priority;
+  final DateTime? deadlineDate;
+  final TaskPriority? priority;
   final TaskStatus status;
 
   /// Создает базовую сущность задачи.
@@ -16,8 +16,8 @@ class TaskBaseEntity {
     required this.title,
     required this.description,
     required this.createdDate,
-    required this.deadlineDate,
-    required this.priority,
+    this.deadlineDate,
+    this.priority,
     required this.status,
   });
 

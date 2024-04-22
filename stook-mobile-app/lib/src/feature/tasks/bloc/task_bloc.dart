@@ -190,11 +190,16 @@ class TaskBloc extends ITaskBloc {
     emit(const TaskState.loaderShow());
     final tasks = await _getTasks();
     final mostImportanceTasksItems = await _algorithmSolver.get(
-      tasks.where((task) => planningStatuses.contains(task.status)).toList(),
+      tasks
+          .where((task) =>
+              planningStatuses.contains(task.status) &&
+              task.deadlineDate != null &&
+              task.priority != null)
+          .toList(),
       (task) => AlgorithmItem(
           id: task.id,
-          deadlineDate: task.deadlineDate,
-          priority: task.priority.toPriorityNumber,
+          deadlineDate: task.deadlineDate!,
+          priority: task.priority!.toPriorityNumber,
           dependsOnTasksIds: task.dependOnTasksIds),
     );
 
@@ -236,7 +241,7 @@ class TaskBloc extends ITaskBloc {
         priority: task.priority,
         status: task.status,
         createdDate: task.createdDate ?? DateTime.now(),
-        deadlineDate: task.deadlineDate ?? DateTime.now(),
+        deadlineDate: task.deadlineDate,
         subtasksIds: subTaskIds,
         dependOnTasksIds: dependOnTaskIds,
       );
@@ -255,7 +260,7 @@ class TaskBloc extends ITaskBloc {
               priority: task.priority,
               status: task.status,
               createdDate: task.createdDate ?? DateTime.now(),
-              deadlineDate: task.deadlineDate ?? DateTime.now(),
+              deadlineDate: task.deadlineDate,
             ))
         .toList();
   }

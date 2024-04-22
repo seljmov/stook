@@ -150,16 +150,17 @@ class _CalendarDayTask extends StatelessWidget {
                       child: TaskStatusCard(taskStatus: task.status),
                     ),
                     const SizedBox(width: 8.0),
-                    Flexible(
-                      child: Text(
-                        task.priority.name,
-                        style: TextStyle(
-                          color: task.priority.color,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
+                    if (task.priority != null)
+                      Flexible(
+                        child: Text(
+                          task.priority!.name,
+                          style: TextStyle(
+                            color: task.priority!.color,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 ),
                 const SizedBox(height: 4.0),

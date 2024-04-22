@@ -32,16 +32,17 @@ class TaskCard extends StatelessWidget {
                     child: TaskStatusCard(taskStatus: task.status),
                   ),
                   const SizedBox(width: 8.0),
-                  Flexible(
-                    child: Text(
-                      task.priority.name,
-                      style: TextStyle(
-                        color: task.priority.color,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
+                  if (task.priority != null)
+                    Flexible(
+                      child: Text(
+                        task.priority!.name,
+                        style: TextStyle(
+                          color: task.priority!.color,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
               const SizedBox(height: 2.0),
@@ -54,8 +55,12 @@ class TaskCard extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 2.0),
-              Text('Крайний срок: ${kDateFormat.format(task.deadlineDate)}'),
+              if (task.deadlineDate != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 2.0),
+                  child: Text(
+                      'Крайний срок: ${kDateFormat.format(task.deadlineDate!)}'),
+                ),
             ],
           ),
         ),

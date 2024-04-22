@@ -19,7 +19,7 @@ class Tasks extends Table {
   DateTimeColumn get deadlineDate => dateTime().nullable()();
 
   /// Приоритет.
-  IntColumn get priority => intEnum<TaskPriority>()();
+  IntColumn get priority => intEnum<TaskPriority>().nullable()();
 
   /// Статус.
   IntColumn get status => intEnum<TaskStatus>()();

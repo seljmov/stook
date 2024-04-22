@@ -1,6 +1,6 @@
 name: stook_database
 description: "A database package for the Stook app"
-version: 0.0.1
+version: 0.0.2
 publish_to: 'none'
 
 environment:

@@ -124,30 +124,6 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
                 );
                 return;
               }
-              if (description.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Введите описание задачи'),
-                  ),
-                );
-                return;
-              }
-              if (deadline == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Выберите крайний срок'),
-                  ),
-                );
-                return;
-              }
-              if (priority == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Выберите приоритет'),
-                  ),
-                );
-                return;
-              }
 
               final puttedTask = TaskEntity(
                 id: widget.task?.id ?? DateTime.now().millisecondsSinceEpoch,
@@ -160,6 +136,7 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
                 subtasksIds: subTasksIdsNotifier.value,
                 dependOnTasksIds: dependsTasksIdsNotifier.value,
               );
+              debugPrint('Putted task: ${puttedTask.deadlineDate}');
               TaskScope.savePuttedTask(context, task: puttedTask);
               Navigator.of(context).pop();
             },

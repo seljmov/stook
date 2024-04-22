@@ -41,7 +41,16 @@ class DatabaseContext extends _$DatabaseContext {
   DatabaseContext() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (migrator, from, to) async {
+          if (from == 1) {
+            await migrator.alterTable(TableMigration(tasks));
+          }
+        },
+      );
 }
 
 LazyDatabase _openConnection() {
