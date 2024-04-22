@@ -34,8 +34,11 @@ class TasksScreen extends StatelessWidget {
             ),
             child: TaskCard(
               task: task,
-              onPressed: (task) =>
-                  TaskScope.openPutTask(context, taskId: task.id),
+              onPressed: (task) => TaskScope.openPutTask(
+                context,
+                taskId: task.id,
+                fromScreenIndex: 0,
+              ),
             ),
           );
         },

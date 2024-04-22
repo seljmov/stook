@@ -11,10 +11,12 @@ class TaskPutScreen extends StatefulWidget {
     super.key,
     this.task,
     this.allTasks = const [],
+    this.fromScreenIndex = 0,
   });
 
   final TaskEntity? task;
   final List<TaskEntity> allTasks;
+  final int fromScreenIndex;
 
   @override
   State<TaskPutScreen> createState() => _TaskPutScreenState();
@@ -65,7 +67,7 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
             visible: widget.task != null,
             child: IconButton(
               onPressed: () async {
-                final deleted = await showDialog(
+                final deleted = await showDialog<bool>(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
@@ -92,9 +94,13 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
                     );
                   },
                 );
-                if (deleted == true) {
-                  TaskScope.deleteTask(context, widget.task!);
-                  Navigator.of(context).pop();
+                if (deleted != null && deleted) {
+                  TaskScope.deleteTask(
+                    context,
+                    widget.task!,
+                    widget.fromScreenIndex,
+                  );
+                  Navigator.of(context).pop(widget.fromScreenIndex);
                 }
               },
               icon: const Icon(

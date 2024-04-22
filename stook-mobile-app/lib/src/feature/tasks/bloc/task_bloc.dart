@@ -57,6 +57,7 @@ class TaskBloc extends ITaskBloc {
       tasks: entities,
       mostImportanceTasks: mostImportanceTasks,
       lastImportanceAlgorithmRunTime: lastImportanceAlgorithmRunTime,
+      initialScreenIndex: 0,
     ));
   }
 
@@ -68,7 +69,11 @@ class TaskBloc extends ITaskBloc {
     final entities = await _getTasks();
     if (event.taskId == null) {
       emit(const TaskState.loaderHide());
-      emit(TaskState.openPutTaskScreen(task: null, allTasks: entities));
+      emit(TaskState.openPutTaskScreen(
+        task: null,
+        allTasks: entities,
+        fromScreenIndex: event.fromScreenIndex,
+      ));
       return;
     }
     final taskSubtasks = await _databaseContext.taskSubtaskRelationsDao
@@ -79,7 +84,11 @@ class TaskBloc extends ITaskBloc {
         .firstWhere((task) => task.id == event.taskId)
         .copyWith(subtasksIds: taskSubtasks, dependOnTasksIds: taskDependOns);
     emit(const TaskState.loaderHide());
-    emit(TaskState.openPutTaskScreen(task: taskEntity, allTasks: entities));
+    emit(TaskState.openPutTaskScreen(
+      task: taskEntity,
+      allTasks: entities,
+      fromScreenIndex: event.fromScreenIndex,
+    ));
   }
 
   Future<void> _savePuttedTask(
@@ -140,6 +149,7 @@ class TaskBloc extends ITaskBloc {
       tasks: entities,
       mostImportanceTasks: mostImportanceTasks,
       lastImportanceAlgorithmRunTime: lastImportanceAlgorithmRunTime,
+      initialScreenIndex: 0,
     ));
   }
 
@@ -166,6 +176,7 @@ class TaskBloc extends ITaskBloc {
       tasks: entities,
       mostImportanceTasks: mostImportanceTasks,
       lastImportanceAlgorithmRunTime: lastImportanceAlgorithmRunTime,
+      initialScreenIndex: event.fromScreenIndex,
     ));
   }
 
@@ -204,6 +215,7 @@ class TaskBloc extends ITaskBloc {
       tasks: taskBaseEntities,
       mostImportanceTasks: tasksWithImportance,
       lastImportanceAlgorithmRunTime: lastImportanceAlgorithmRunTime,
+      initialScreenIndex: 1,
     ));
   }
 
@@ -255,6 +267,7 @@ abstract class TaskEvent with _$TaskEvent {
   /// Добавление/изменение задачи.
   const factory TaskEvent.openPutTask({
     required int? taskId,
+    required int fromScreenIndex,
   }) = _TaskOpenPutTaskEvent;
 
   /// Сохранение добавленной/измененной задачи.
@@ -265,6 +278,7 @@ abstract class TaskEvent with _$TaskEvent {
   /// Удаление задачи.
   const factory TaskEvent.deleteTask({
     required TaskEntity task,
+    required int fromScreenIndex,
   }) = _TaskDeleteTaskEvent;
 
   /// Запуск алгоритма важности.
@@ -289,11 +303,13 @@ abstract class TaskState with _$TaskState {
     required List<TaskBaseEntity> tasks,
     required List<TaskBaseEntity> mostImportanceTasks,
     required DateTime? lastImportanceAlgorithmRunTime,
+    required int initialScreenIndex,
   }) = _TaskLoadedState;
 
   /// Добавлена/изменена задача.
   const factory TaskState.openPutTaskScreen({
     required TaskEntity? task,
     required List<TaskEntity> allTasks,
+    required int fromScreenIndex,
   }) = _TaskOpenPutTaskScreenState;
 }

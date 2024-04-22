@@ -21,7 +21,7 @@ class TaskImportanceScreen extends StatelessWidget {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.69,
       child: Visibility(
-        visible: tasks.isNotEmpty,
+        visible: tasks.isNotEmpty && lastImportanceAlgorithmRunTime != null,
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -35,13 +35,16 @@ class TaskImportanceScreen extends StatelessWidget {
                   ),
                   child: TaskCard(
                     task: task,
-                    onPressed: (task) =>
-                        TaskScope.openPutTask(context, taskId: task.id),
+                    onPressed: (task) => TaskScope.openPutTask(
+                      context,
+                      taskId: task.id,
+                      fromScreenIndex: 1,
+                    ),
                   ),
                 );
               }),
               Text(
-                'Актуально на: \n${kDateTimeFormat.format(lastImportanceAlgorithmRunTime!)}',
+                'Актуально на: \n${kDateTimeFormat.format(lastImportanceAlgorithmRunTime ?? DateTime.now())}',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 14,

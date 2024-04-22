@@ -4,21 +4,41 @@ import '../themes/theme_colors.dart';
 import '../themes/theme_extention.dart';
 
 /// Компонент таб-бар
-class ThesisTabBar extends StatelessWidget {
+class ThesisTabBar extends StatefulWidget {
   const ThesisTabBar({
     super.key,
     required this.tabs,
     required this.children,
+    this.initialScreenIndex = 0,
     this.onTap,
   });
 
   final List<String> tabs;
   final List<Widget> children;
+  final int initialScreenIndex;
   final void Function(int)? onTap;
 
   @override
+  State<ThesisTabBar> createState() => _ThesisTabBarState();
+}
+
+class _ThesisTabBarState extends State<ThesisTabBar> {
+  final pickedNotifier = ValueNotifier<int>(0);
+
+  @override
+  void initState() {
+    pickedNotifier.value = widget.initialScreenIndex;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    pickedNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final pickedNotifier = ValueNotifier<int>(0);
     return ValueListenableBuilder(
       valueListenable: pickedNotifier,
       builder: (context, currentIndex, child) {
@@ -31,18 +51,18 @@ class ThesisTabBar extends StatelessWidget {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: List.generate(tabs.length, (index) {
+                  children: List.generate(widget.tabs.length, (index) {
                     return Padding(
                       padding: EdgeInsets.only(
-                        right: index != tabs.length - 1 ? 8 : 0,
+                        right: index != widget.tabs.length - 1 ? 8 : 0,
                       ),
                       child: GestureDetector(
                         onTap: () {
                           pickedNotifier.value = index;
-                          onTap?.call(index);
+                          widget.onTap?.call(index);
                         },
                         child: _ThesisTabBarItem(
-                          title: tabs[index],
+                          title: widget.tabs[index],
                           isPicked: currentIndex == index,
                         ),
                       ),
@@ -52,7 +72,7 @@ class ThesisTabBar extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            children[currentIndex],
+            widget.children[currentIndex],
           ],
         );
       },

@@ -17,8 +17,15 @@ abstract class TaskScope {
   }
 
   /// Добавить/изменить задачу.
-  static void openPutTask(BuildContext context, {int? taskId}) {
-    of(context).add(TaskEvent.openPutTask(taskId: taskId));
+  static void openPutTask(
+    BuildContext context, {
+    int? taskId,
+    int fromScreenIndex = 0,
+  }) {
+    of(context).add(TaskEvent.openPutTask(
+      taskId: taskId,
+      fromScreenIndex: fromScreenIndex,
+    ));
   }
 
   /// Сохранить задачу.
@@ -27,8 +34,12 @@ abstract class TaskScope {
   }
 
   /// Удалить задачу.
-  static void deleteTask(BuildContext context, TaskEntity task) {
-    of(context).add(TaskEvent.deleteTask(task: task));
+  static void deleteTask(BuildContext context, TaskEntity task,
+      [int fromScreenIndex = 0]) {
+    of(context).add(TaskEvent.deleteTask(
+      task: task,
+      fromScreenIndex: fromScreenIndex,
+    ));
   }
 
   /// Запустить алгоритм важности.

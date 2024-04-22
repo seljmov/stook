@@ -25,12 +25,18 @@ class TasksWrapperScreen extends StatelessWidget {
           initial: (_) => TaskScope.load(context),
           loaderShow: (_) => context.loaderOverlay.show(),
           loaderHide: (_) => context.loaderOverlay.hide(),
-          openPutTaskScreen: (state) => Navigator.of(context)
-              .push(MaterialPageRoute(
-                builder: (context) =>
-                    TaskPutScreen(task: state.task, allTasks: state.allTasks),
-              ))
-              .whenComplete(() => TaskScope.load(context)),
+          openPutTaskScreen: (state) async {
+            final value =
+                await Navigator.of(context).push<int>(MaterialPageRoute(
+              builder: (context) => TaskPutScreen(
+                task: state.task,
+                allTasks: state.allTasks,
+                fromScreenIndex: state.fromScreenIndex,
+              ),
+            ));
+            debugPrint('openPutTaskScreen: $value');
+            TaskScope.load(context);
+          },
         );
       },
       builder: (context, state) {
@@ -59,7 +65,7 @@ class TasksWrapperScreen extends StatelessWidget {
           body: Center(
             child: state.whenOrNull(
               loaded: (tasks, mostImportanceTasks,
-                      lastImportanceAlgorithmRunTime) =>
+                      lastImportanceAlgorithmRunTime, initialScreenIndex) =>
                   Visibility(
                 visible: tasks.isEmpty,
                 child: const Center(
