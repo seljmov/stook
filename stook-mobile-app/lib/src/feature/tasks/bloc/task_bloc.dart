@@ -35,6 +35,7 @@ class TaskBloc extends ITaskBloc {
         openPutTask: (event) => _openPutTask(event, emit),
         savePuttedTask: (event) => _savePuttedTask(event, emit),
         deleteTask: (event) => _deleteTask(event, emit),
+        changeTaskStatus: (event) => _changeTaskStatus(event, emit),
         runImportanceAlgorithm: (event) => _runImportanceAlgorithm(event, emit),
       ),
     );
@@ -183,6 +184,35 @@ class TaskBloc extends ITaskBloc {
     ));
   }
 
+  Future<void> _changeTaskStatus(
+    _TaskChangeTaskStatusEvent event,
+    Emitter<TaskState> emit,
+  ) async {
+    emit(const TaskState.loaderShow());
+    final task = await _databaseContext.tasksDao.getTaskById(event.taskId);
+    if (task == null) {
+      emit(const TaskState.loaderHide());
+      return;
+    }
+    await _databaseContext.tasksDao
+        .updateTask(task.copyWith(status: event.status));
+    final entities = await _getBaseTasks();
+    final mostImportanceTasksIds =
+        await _importanceTasksStorage.getMostImportanceTasks();
+    final mostImportanceTasks = entities
+        .where((task) => mostImportanceTasksIds.contains(task.id))
+        .toList();
+    final lastImportanceAlgorithmRunTime =
+        await _importanceTasksStorage.getMostImportanceTasksTime();
+    emit(const TaskState.loaderHide());
+    emit(TaskState.loaded(
+      tasks: entities,
+      mostImportanceTasks: mostImportanceTasks,
+      lastImportanceAlgorithmRunTime: lastImportanceAlgorithmRunTime,
+      initialScreenIndex: event.fromScreenIndex,
+    ));
+  }
+
   Future<void> _runImportanceAlgorithm(
     _TaskRunImportanceAlgorithmEvent event,
     Emitter<TaskState> emit,
@@ -288,6 +318,13 @@ abstract class TaskEvent with _$TaskEvent {
     required TaskEntity task,
     required int fromScreenIndex,
   }) = _TaskDeleteTaskEvent;
+
+  /// Удаление задачи.
+  const factory TaskEvent.changeTaskStatus({
+    required int taskId,
+    required TaskStatus status,
+    required int fromScreenIndex,
+  }) = _TaskChangeTaskStatusEvent;
 
   /// Запуск алгоритма важности.
   const factory TaskEvent.runImportanceAlgorithm() =

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stook_database/models/enums/task_status.dart';
 
 import '../entities/task_entity.dart';
 import 'task_bloc.dart';
@@ -38,6 +39,20 @@ abstract class TaskScope {
       [int fromScreenIndex = 0]) {
     of(context).add(TaskEvent.deleteTask(
       task: task,
+      fromScreenIndex: fromScreenIndex,
+    ));
+  }
+
+  /// Изменить статус задачи.
+  static void changeTaskStatus(
+    BuildContext context, {
+    required int taskId,
+    required TaskStatus status,
+    int fromScreenIndex = 0,
+  }) {
+    of(context).add(TaskEvent.changeTaskStatus(
+      taskId: taskId,
+      status: status,
       fromScreenIndex: fromScreenIndex,
     ));
   }

@@ -52,4 +52,12 @@ extension TaskStatusExtension on TaskStatus {
         throw Exception('Unknown task status: $this');
     }
   }
+
+  /// Возвращает индекс сортировки для перечисления.
+  int get sortIndex => switch (this) {
+        TaskStatus.inProgress => 0,
+        TaskStatus.pending => 1,
+        TaskStatus.overdue => 2,
+        TaskStatus.completed => 3,
+      };
 }
