@@ -102,9 +102,8 @@ class _ThesisTabBarItem extends StatelessWidget {
     );
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: isPicked
-            ? kPrimaryLighterColor
-            : context.currentTheme.cardTheme.color,
+        color:
+            isPicked ? Colors.deepPurple : context.currentTheme.cardTheme.color,
         borderRadius: const BorderRadius.all(
           Radius.circular(8),
         ),
