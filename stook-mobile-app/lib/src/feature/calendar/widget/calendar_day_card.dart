@@ -163,7 +163,11 @@ class _CalendarDayTask extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 4.0),
-                Text(task.title),
+                Text(
+                  task.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ],
             ),
           ),

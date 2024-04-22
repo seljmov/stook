@@ -45,7 +45,15 @@ class TaskCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 2.0),
-              Text(task.title),
+              Text(
+                task.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               const SizedBox(height: 2.0),
               Text('Крайний срок: ${kDateFormat.format(task.deadlineDate)}'),
             ],
