@@ -48,13 +48,28 @@ class TaskImportanceScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 14,
-                  color: Colors.grey,
+                  color: Colors.black,
                 ),
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => TaskScope.runImportanceAlgorithm(context),
-                child: const Text('Обновить'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async =>
+                        await _HowItWorkBottomSheep().show(context),
+                    child: const Text('Как это работает?'),
+                  ),
+                  const SizedBox(width: 16),
+                  ElevatedButton(
+                    onPressed: () => TaskScope.runImportanceAlgorithm(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepPurple,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text('Обновить'),
+                  ),
+                ],
               ),
             ],
           ),
@@ -65,7 +80,7 @@ class TaskImportanceScreen extends StatelessWidget {
             const Icon(
               Icons.data_exploration_outlined,
               size: 64,
-              color: Colors.grey,
+              color: Colors.black,
             ),
             const SizedBox(height: 16),
             const Text(
@@ -73,17 +88,129 @@ class TaskImportanceScreen extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey,
+                color: Colors.black,
               ),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => TaskScope.runImportanceAlgorithm(context),
-              child: const Text('Запустить'),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () async =>
+                      await _HowItWorkBottomSheep().show(context),
+                  child: const Text('Как это работает?'),
+                ),
+                ElevatedButton(
+                  onPressed: () => TaskScope.runImportanceAlgorithm(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Запустить'),
+                ),
+              ],
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Нижний лист с информацией о том, как работает алгоритм важности задач.
+class _HowItWorkBottomSheep {
+  Future<void> show(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return const Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Как это работает?',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: 16),
+              SizedBox(
+                height: 420,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Алгоритм важности задач позволяет выявить наиболее важные задачи, которые необходимо выполнить в первую очередь. Он основан на следующих параметрах:',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        '1. Крайний срок выполнения задачи.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        '2. Приоритет задачи.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        '3. Подзадачи.*',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        '4. Задачи, от которых зависит плавание других задач.**',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Задача может зависить от задач, которые еще не выполнены. Такие задачи не будут планироваться, пока не будут выполнены задачи, от которых они зависят.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        '* - если у задачи есть подзадачи, то в планировании учитываются только они, а не сама задача.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      Text(
+                        '** - если у задачи есть зависимости, то в планировании учитываются только задачи, от которых она зависит. Для таких задач высчитывается приоритет зависимости, учитывающий приоритет задач, зависимых от нее.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
