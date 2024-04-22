@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:stook_database/models/task.dart';
 
 import '../../database_context.dart';
+import '../../models/enums/task_status.dart';
 
 part 'task_dao.g.dart';
 
@@ -11,7 +12,19 @@ class TasksDao extends DatabaseAccessor<DatabaseContext> with _$TasksDaoMixin {
   TasksDao(super.db);
 
   /// Получить все задачи.
-  Future<List<Task>> getAllTasks() => select(tasks).get();
+  Future<List<Task>> getAllTasks() async {
+    await transaction(() async {
+      final now = DateTime.now().add(const Duration(days: 1));
+      final needUpdateTasks = await (select(tasks)
+            ..where((t) => t.deadlineDate.isSmallerThanValue(now)))
+          .get();
+      for (final task in needUpdateTasks) {
+        await updateTask(task.copyWith(status: TaskStatus.overdue));
+      }
+    });
+
+    return select(tasks).get();
+  }
 
   /// Получить задачу по идентификатору.
   Future<Task?> getTaskById(int id) =>
