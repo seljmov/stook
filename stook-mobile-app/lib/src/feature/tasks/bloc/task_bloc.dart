@@ -1,9 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stook_database/database_context.dart';
+import 'package:stook_database/models/enums/task_priority.dart';
+import 'package:stook_database/models/enums/task_status.dart';
+import 'package:stook_importance_algorithm/main.dart';
 
 import '../entities/task_base_entity.dart';
 import '../entities/task_entity.dart';
+import '../repositories/importance_tasks_storage.dart';
 
 part 'task_bloc.freezed.dart';
 
@@ -15,16 +19,24 @@ abstract class ITaskBloc extends Bloc<TaskEvent, TaskState> {
 /// Блок задач.
 class TaskBloc extends ITaskBloc {
   final DatabaseContext _databaseContext;
+  final IImportanceTasksStorage _importanceTasksStorage;
+  final IAlgorithmSolver<TaskEntity> _algorithmSolver;
 
   TaskBloc({
     required DatabaseContext databaseContext,
-  }) : _databaseContext = databaseContext {
+    required IImportanceTasksStorage importanceTasksStorage,
+    required IAlgorithmSolver<TaskEntity> algorithmSolver,
+  })  : _databaseContext = databaseContext,
+        _importanceTasksStorage = importanceTasksStorage,
+        _algorithmSolver = algorithmSolver {
     on<TaskEvent>(
       (event, emit) => event.map(
         load: (event) => _load(event, emit),
         openPutTask: (event) => _openPutTask(event, emit),
         savePuttedTask: (event) => _savePuttedTask(event, emit),
         deleteTask: (event) => _deleteTask(event, emit),
+        changeTaskStatus: (event) => _changeTaskStatus(event, emit),
+        runImportanceAlgorithm: (event) => _runImportanceAlgorithm(event, emit),
       ),
     );
   }
@@ -35,8 +47,20 @@ class TaskBloc extends ITaskBloc {
   ) async {
     emit(const TaskState.loaderShow());
     final entities = await _getBaseTasks();
+    final mostImportanceTasksIds =
+        await _importanceTasksStorage.getMostImportanceTasks();
+    final mostImportanceTasks = entities
+        .where((task) => mostImportanceTasksIds.contains(task.id))
+        .toList();
+    final lastImportanceAlgorithmRunTime =
+        await _importanceTasksStorage.getMostImportanceTasksTime();
     emit(const TaskState.loaderHide());
-    emit(TaskState.loaded(tasks: entities));
+    emit(TaskState.loaded(
+      tasks: entities,
+      mostImportanceTasks: mostImportanceTasks,
+      lastImportanceAlgorithmRunTime: lastImportanceAlgorithmRunTime,
+      initialScreenIndex: 0,
+    ));
   }
 
   Future<void> _openPutTask(
@@ -44,21 +68,32 @@ class TaskBloc extends ITaskBloc {
     Emitter<TaskState> emit,
   ) async {
     emit(const TaskState.loaderShow());
-    final entities = await _getTasks();
+    final allEntities = await _getTasks();
+    final entities = (await _getTasks())
+        .where((task) => planningStatuses.contains(task.status))
+        .toList();
     if (event.taskId == null) {
       emit(const TaskState.loaderHide());
-      emit(TaskState.openPutTaskScreen(task: null, allTasks: entities));
+      emit(TaskState.openPutTaskScreen(
+        task: null,
+        allTasks: entities,
+        fromScreenIndex: event.fromScreenIndex,
+      ));
       return;
     }
     final taskSubtasks = await _databaseContext.taskSubtaskRelationsDao
         .getTaskSubtaskRelations(event.taskId!);
     final taskDependOns = await _databaseContext.taskDependOnRelationsDao
         .getTaskDependOnRelations(event.taskId!);
-    final taskEntity = entities
+    final taskEntity = allEntities
         .firstWhere((task) => task.id == event.taskId)
         .copyWith(subtasksIds: taskSubtasks, dependOnTasksIds: taskDependOns);
     emit(const TaskState.loaderHide());
-    emit(TaskState.openPutTaskScreen(task: taskEntity, allTasks: entities));
+    emit(TaskState.openPutTaskScreen(
+      task: taskEntity,
+      allTasks: entities,
+      fromScreenIndex: event.fromScreenIndex,
+    ));
   }
 
   Future<void> _savePuttedTask(
@@ -70,7 +105,13 @@ class TaskBloc extends ITaskBloc {
         await _databaseContext.tasksDao.getTaskById(event.task.id);
     await _databaseContext.transaction(() async {
       if (existedTask != null) {
-        await _databaseContext.tasksDao.updateTask(event.task.toTask());
+        var updatedTask = event.task;
+        if (event.task.status == TaskStatus.overdue &&
+            event.task.deadlineDate != null &&
+            event.task.deadlineDate!.isAfter(DateTime.now())) {
+          updatedTask = updatedTask.copyWith(status: TaskStatus.pending);
+        }
+        await _databaseContext.tasksDao.updateTask(updatedTask.toTask());
       } else {
         await _databaseContext.tasksDao
             .insertTask(event.task.toTaskCompanion());
@@ -107,8 +148,20 @@ class TaskBloc extends ITaskBloc {
       }
     });
     final entities = await _getBaseTasks();
+    final mostImportanceTasksIds =
+        await _importanceTasksStorage.getMostImportanceTasks();
+    final mostImportanceTasks = entities
+        .where((task) => mostImportanceTasksIds.contains(task.id))
+        .toList();
+    final lastImportanceAlgorithmRunTime =
+        await _importanceTasksStorage.getMostImportanceTasksTime();
     emit(const TaskState.loaderHide());
-    emit(TaskState.loaded(tasks: entities));
+    emit(TaskState.loaded(
+      tasks: entities,
+      mostImportanceTasks: mostImportanceTasks,
+      lastImportanceAlgorithmRunTime: lastImportanceAlgorithmRunTime,
+      initialScreenIndex: 0,
+    ));
   }
 
   Future<void> _deleteTask(
@@ -123,7 +176,92 @@ class TaskBloc extends ITaskBloc {
           await _databaseContext.tasksDao.deleteTask(event.task.toTask()),
         });
     final entities = await _getBaseTasks();
-    emit(TaskState.loaded(tasks: entities));
+    final mostImportanceTasksIds =
+        await _importanceTasksStorage.getMostImportanceTasks();
+    final mostImportanceTasks = entities
+        .where((task) => mostImportanceTasksIds.contains(task.id))
+        .toList();
+    final lastImportanceAlgorithmRunTime =
+        await _importanceTasksStorage.getMostImportanceTasksTime();
+    emit(TaskState.loaded(
+      tasks: entities,
+      mostImportanceTasks: mostImportanceTasks,
+      lastImportanceAlgorithmRunTime: lastImportanceAlgorithmRunTime,
+      initialScreenIndex: event.fromScreenIndex,
+    ));
+  }
+
+  Future<void> _changeTaskStatus(
+    _TaskChangeTaskStatusEvent event,
+    Emitter<TaskState> emit,
+  ) async {
+    emit(const TaskState.loaderShow());
+    final task = await _databaseContext.tasksDao.getTaskById(event.taskId);
+    if (task == null) {
+      emit(const TaskState.loaderHide());
+      return;
+    }
+    await _databaseContext.tasksDao
+        .updateTask(task.copyWith(status: event.status));
+    final entities = await _getBaseTasks();
+    final mostImportanceTasksIds =
+        await _importanceTasksStorage.getMostImportanceTasks();
+    final mostImportanceTasks = entities
+        .where((task) => mostImportanceTasksIds.contains(task.id))
+        .toList();
+    final lastImportanceAlgorithmRunTime =
+        await _importanceTasksStorage.getMostImportanceTasksTime();
+    emit(const TaskState.loaderHide());
+    emit(TaskState.loaded(
+      tasks: entities,
+      mostImportanceTasks: mostImportanceTasks,
+      lastImportanceAlgorithmRunTime: lastImportanceAlgorithmRunTime,
+      initialScreenIndex: event.fromScreenIndex,
+    ));
+  }
+
+  Future<void> _runImportanceAlgorithm(
+    _TaskRunImportanceAlgorithmEvent event,
+    Emitter<TaskState> emit,
+  ) async {
+    emit(const TaskState.loaderShow());
+    final tasks = await _getTasks();
+    final mostImportanceTasksItems = await _algorithmSolver.get(
+      tasks
+          .where((task) =>
+              planningStatuses.contains(task.status) &&
+              task.deadlineDate != null &&
+              task.priority != null)
+          .toList(),
+      (task) => AlgorithmItem(
+          id: task.id,
+          deadlineDate: task.deadlineDate!,
+          priority: task.priority!.toPriorityNumber,
+          dependsOnTasksIds: task.dependOnTasksIds),
+    );
+
+    if (mostImportanceTasksItems.isNotEmpty) {
+      final mostImportanceTasksItemsIds =
+          mostImportanceTasksItems.map((item) => item.id).toList();
+      await _importanceTasksStorage
+          .saveMostImportanceTasks(mostImportanceTasksItemsIds);
+    }
+
+    final taskBaseEntities = tasks.map((task) => task.toBaseEntity()).toList();
+    final tasksWithImportance = taskBaseEntities
+        .where((task) =>
+            mostImportanceTasksItems.any((item) => item.id == task.id))
+        .toList();
+
+    final lastImportanceAlgorithmRunTime =
+        await _importanceTasksStorage.getMostImportanceTasksTime();
+    emit(const TaskState.loaderHide());
+    emit(TaskState.loaded(
+      tasks: taskBaseEntities,
+      mostImportanceTasks: tasksWithImportance,
+      lastImportanceAlgorithmRunTime: lastImportanceAlgorithmRunTime,
+      initialScreenIndex: 1,
+    ));
   }
 
   Future<List<TaskEntity>> _getTasks() async {
@@ -140,7 +278,7 @@ class TaskBloc extends ITaskBloc {
         priority: task.priority,
         status: task.status,
         createdDate: task.createdDate ?? DateTime.now(),
-        deadlineDate: task.deadlineDate ?? DateTime.now(),
+        deadlineDate: task.deadlineDate,
         subtasksIds: subTaskIds,
         dependOnTasksIds: dependOnTaskIds,
       );
@@ -159,7 +297,7 @@ class TaskBloc extends ITaskBloc {
               priority: task.priority,
               status: task.status,
               createdDate: task.createdDate ?? DateTime.now(),
-              deadlineDate: task.deadlineDate ?? DateTime.now(),
+              deadlineDate: task.deadlineDate,
             ))
         .toList();
   }
@@ -174,6 +312,7 @@ abstract class TaskEvent with _$TaskEvent {
   /// Добавление/изменение задачи.
   const factory TaskEvent.openPutTask({
     required int? taskId,
+    required int fromScreenIndex,
   }) = _TaskOpenPutTaskEvent;
 
   /// Сохранение добавленной/измененной задачи.
@@ -184,7 +323,19 @@ abstract class TaskEvent with _$TaskEvent {
   /// Удаление задачи.
   const factory TaskEvent.deleteTask({
     required TaskEntity task,
+    required int fromScreenIndex,
   }) = _TaskDeleteTaskEvent;
+
+  /// Удаление задачи.
+  const factory TaskEvent.changeTaskStatus({
+    required int taskId,
+    required TaskStatus status,
+    required int fromScreenIndex,
+  }) = _TaskChangeTaskStatusEvent;
+
+  /// Запуск алгоритма важности.
+  const factory TaskEvent.runImportanceAlgorithm() =
+      _TaskRunImportanceAlgorithmEvent;
 }
 
 /// Состояния блока задач.
@@ -202,11 +353,15 @@ abstract class TaskState with _$TaskState {
   /// Загружены данные.
   const factory TaskState.loaded({
     required List<TaskBaseEntity> tasks,
+    required List<TaskBaseEntity> mostImportanceTasks,
+    required DateTime? lastImportanceAlgorithmRunTime,
+    required int initialScreenIndex,
   }) = _TaskLoadedState;
 
   /// Добавлена/изменена задача.
   const factory TaskState.openPutTaskScreen({
     required TaskEntity? task,
     required List<TaskEntity> allTasks,
+    required int fromScreenIndex,
   }) = _TaskOpenPutTaskScreenState;
 }

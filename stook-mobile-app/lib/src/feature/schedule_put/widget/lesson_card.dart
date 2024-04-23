@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../common/constants/constants.dart';
+import '../../../common/extension/time_of_day_x.dart';
 import '../models.dart';
 import 'lesson_type_card.dart';
 
@@ -55,11 +57,11 @@ class LessonCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          lesson.timeStart.format(context),
+                          kTimeFormat.format(lesson.timeStart.toDateTime()),
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         Text(
-                          lesson.timeEnd.format(context),
+                          kTimeFormat.format(lesson.timeEnd.toDateTime()),
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall!

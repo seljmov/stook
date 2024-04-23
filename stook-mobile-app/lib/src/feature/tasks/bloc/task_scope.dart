@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stook_database/models/enums/task_status.dart';
 
 import '../entities/task_entity.dart';
 import 'task_bloc.dart';
@@ -17,8 +18,15 @@ abstract class TaskScope {
   }
 
   /// Добавить/изменить задачу.
-  static void openPutTask(BuildContext context, {int? taskId}) {
-    of(context).add(TaskEvent.openPutTask(taskId: taskId));
+  static void openPutTask(
+    BuildContext context, {
+    int? taskId,
+    int fromScreenIndex = 0,
+  }) {
+    of(context).add(TaskEvent.openPutTask(
+      taskId: taskId,
+      fromScreenIndex: fromScreenIndex,
+    ));
   }
 
   /// Сохранить задачу.
@@ -27,7 +35,30 @@ abstract class TaskScope {
   }
 
   /// Удалить задачу.
-  static void deleteTask(BuildContext context, TaskEntity task) {
-    of(context).add(TaskEvent.deleteTask(task: task));
+  static void deleteTask(BuildContext context, TaskEntity task,
+      [int fromScreenIndex = 0]) {
+    of(context).add(TaskEvent.deleteTask(
+      task: task,
+      fromScreenIndex: fromScreenIndex,
+    ));
+  }
+
+  /// Изменить статус задачи.
+  static void changeTaskStatus(
+    BuildContext context, {
+    required int taskId,
+    required TaskStatus status,
+    int fromScreenIndex = 0,
+  }) {
+    of(context).add(TaskEvent.changeTaskStatus(
+      taskId: taskId,
+      status: status,
+      fromScreenIndex: fromScreenIndex,
+    ));
+  }
+
+  /// Запустить алгоритм важности.
+  static void runImportanceAlgorithm(BuildContext context) {
+    of(context).add(const TaskEvent.runImportanceAlgorithm());
   }
 }

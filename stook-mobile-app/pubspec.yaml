@@ -21,7 +21,7 @@ dependencies:
   collection: ^1.18.0
   injector: ^3.0.0
   stook_database:
-    path: 'packages/database'
+    path: 'packages/stook_database'
   stook_importance_algorithm:
     path: 'packages/importance_algorithm'
   drift_db_viewer: ^2.1.0

@@ -11,10 +11,12 @@ class TaskPutScreen extends StatefulWidget {
     super.key,
     this.task,
     this.allTasks = const [],
+    this.fromScreenIndex = 0,
   });
 
   final TaskEntity? task;
   final List<TaskEntity> allTasks;
+  final int fromScreenIndex;
 
   @override
   State<TaskPutScreen> createState() => _TaskPutScreenState();
@@ -52,6 +54,10 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
     super.dispose();
   }
 
+  /// Признак того, что задача только для чтения.
+  bool get isReadOnly =>
+      widget.task != null && widget.task?.status == TaskStatus.completed;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +71,7 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
             visible: widget.task != null,
             child: IconButton(
               onPressed: () async {
-                final deleted = await showDialog(
+                final deleted = await showDialog<bool>(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
@@ -92,9 +98,13 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
                     );
                   },
                 );
-                if (deleted == true) {
-                  TaskScope.deleteTask(context, widget.task!);
-                  Navigator.of(context).pop();
+                if (deleted != null && deleted) {
+                  TaskScope.deleteTask(
+                    context,
+                    widget.task!,
+                    widget.fromScreenIndex,
+                  );
+                  Navigator.of(context).pop(widget.fromScreenIndex);
                 }
               },
               icon: const Icon(
@@ -103,64 +113,55 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
               ),
             ),
           ),
-          IconButton(
-            onPressed: () {
-              final title = titleController.text;
-              final description = descriptionController.text;
-              final deadline = deadlineNotifier.value;
-              final priority = taskPriorityNotifier.value;
+          Visibility(
+            visible: !isReadOnly,
+            child: IconButton(
+              onPressed: () {
+                if (widget.task != null &&
+                    widget.task?.status == TaskStatus.completed) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Нельзя изменить завершенную задачу'),
+                      backgroundColor: Colors.redAccent,
+                    ),
+                  );
+                  return;
+                }
 
-              if (title.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Введите название задачи'),
-                  ),
-                );
-                return;
-              }
-              if (description.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Введите описание задачи'),
-                  ),
-                );
-                return;
-              }
-              if (deadline == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Выберите крайний срок'),
-                  ),
-                );
-                return;
-              }
-              if (priority == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Выберите приоритет'),
-                  ),
-                );
-                return;
-              }
+                final title = titleController.text;
+                final description = descriptionController.text;
+                final deadline = deadlineNotifier.value;
+                final priority = taskPriorityNotifier.value;
 
-              final puttedTask = TaskEntity(
-                id: widget.task?.id ?? DateTime.now().millisecondsSinceEpoch,
-                title: title,
-                description: description,
-                createdDate: widget.task?.createdDate ?? DateTime.now(),
-                deadlineDate: deadline,
-                priority: priority,
-                status: widget.task?.status ?? TaskStatus.pending,
-                subtasksIds: subTasksIdsNotifier.value,
-                dependOnTasksIds: dependsTasksIdsNotifier.value,
-              );
-              TaskScope.savePuttedTask(context, task: puttedTask);
-              Navigator.of(context).pop();
-            },
-            icon: const Icon(
-              Icons.save,
-              size: 28.0,
-              //color: Colors.grey,
+                if (title.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Введите название задачи'),
+                    ),
+                  );
+                  return;
+                }
+
+                final puttedTask = TaskEntity(
+                  id: widget.task?.id ?? DateTime.now().millisecondsSinceEpoch,
+                  title: title,
+                  description: description,
+                  createdDate: widget.task?.createdDate ?? DateTime.now(),
+                  deadlineDate: deadline,
+                  priority: priority,
+                  status: widget.task?.status ?? TaskStatus.pending,
+                  subtasksIds: subTasksIdsNotifier.value,
+                  dependOnTasksIds: dependsTasksIdsNotifier.value,
+                );
+                debugPrint('Putted task: ${puttedTask.deadlineDate}');
+                TaskScope.savePuttedTask(context, task: puttedTask);
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(
+                Icons.save,
+                size: 28.0,
+                //color: Colors.grey,
+              ),
             ),
           ),
         ],
@@ -180,6 +181,7 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
               child: Column(
                 children: [
                   TextFormField(
+                    readOnly: isReadOnly,
                     controller: titleController,
                     style: const TextStyle(
                       fontSize: 16,
@@ -199,18 +201,20 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
                     color: Colors.grey.shade300,
                   ),
                   TextFormField(
+                    readOnly: isReadOnly,
                     controller: descriptionController,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintStyle: TextStyle(
+                      hintStyle: const TextStyle(
                         color: Colors.grey,
                         fontSize: 16,
                       ),
-                      hintText: 'Описание',
+                      hintText:
+                          isReadOnly ? 'Описание' : 'Описание (необязательно)',
                     ),
                   ),
                 ],
@@ -244,6 +248,10 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
                         ),
                         GestureDetector(
                           onTap: () async {
+                            if (isReadOnly) {
+                              return;
+                            }
+
                             final pickedDate = await showDatePicker(
                               context: context,
                               initialDate: DateTime.now(),
@@ -301,6 +309,9 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
+                            if (isReadOnly) {
+                              return;
+                            }
                             showModalBottomSheet(
                               context: context,
                               builder: (context) {
@@ -431,6 +442,10 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
                         ),
                         GestureDetector(
                           onTap: () async {
+                            if (isReadOnly) {
+                              return;
+                            }
+
                             if (widget.allTasks.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -494,6 +509,10 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
                         ),
                         GestureDetector(
                           onTap: () async {
+                            if (isReadOnly) {
+                              return;
+                            }
+
                             if (widget.allTasks.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -537,6 +556,33 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
                     ),
                   ),
                 ],
+              ),
+            ),
+          ),
+          Visibility(
+            visible: isReadOnly,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0).copyWith(top: 24.0),
+              child: Center(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.green.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Expanded(
+                      child: Text(
+                        'Завершенная задача доступна только для чтения или удаления.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),

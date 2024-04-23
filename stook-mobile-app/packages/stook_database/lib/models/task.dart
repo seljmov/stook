@@ -2,7 +2,6 @@ import 'package:drift/drift.dart';
 import 'package:stook_database/models/enums/enums.dart';
 
 /// Таблица задач.
-@DataClassName('Task')
 class Tasks extends Table {
   /// Идентификатор.
   IntColumn get id => integer().autoIncrement()();
@@ -20,7 +19,7 @@ class Tasks extends Table {
   DateTimeColumn get deadlineDate => dateTime().nullable()();
 
   /// Приоритет.
-  IntColumn get priority => intEnum<TaskPriority>()();
+  IntColumn get priority => intEnum<TaskPriority>().nullable()();
 
   /// Статус.
   IntColumn get status => intEnum<TaskStatus>()();

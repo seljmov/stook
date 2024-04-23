@@ -40,23 +40,40 @@ class AlgorithmDataPreparer implements IAlgorithmDataPreparer {
 
   /// Получить идентификаторы заказов, от которых зависят другие заказы с их приоритетом зависимости
   Map<int, int> _getTasksDependsPriorities(List<AlgorithmItem> tasks) {
-    final hasDependIds = tasks
-        .where((task) => task.dependsOnTasksIds.isNotEmpty)
-        .map((task) => task.dependsOnTasksIds)
-        .reduce((value, element) => value + element);
-
-    // Количество зависимостей для каждого идентификатора
-    final dependIdCount = hasDependIds.fold<Map<int, int>>(
-      {},
-      (map, id) => map..update(id, (value) => value + 1, ifAbsent: () => 1),
+    final taskByTaskIdMap = Map<int, AlgorithmItem>.fromIterable(
+      tasks,
+      key: (task) => task.id,
     );
+    final dependsIdsByTaskId = tasks
+        .where((task) => task.dependsOnTasksIds.isNotEmpty)
+        .map((task) => (task.id, task.dependsOnTasksIds))
+        .toList();
+    final revertedDependsIdsByTaskId = <int, List<int>>{};
+    for (var entry in dependsIdsByTaskId) {
+      var taskId = entry.$1;
+      var dependsIds = entry.$2;
 
-    // Идентификаторы заказов, от которых зависят другие заказы с их приоритетом зависимости
-    final dependPrioritiesByTaskId = <int, int>{};
-    for (final item in dependIdCount.keys) {
-      dependPrioritiesByTaskId[item] = dependIdCount[item]! * 2;
+      for (var dependId in dependsIds) {
+        revertedDependsIdsByTaskId.putIfAbsent(dependId, () => []);
+        revertedDependsIdsByTaskId[dependId]!.add(taskId);
+      }
     }
 
-    return dependPrioritiesByTaskId;
+    final dependsPrioritiesByTaskId = <int, int>{};
+    for (var entry in revertedDependsIdsByTaskId.entries) {
+      var taskId = entry.key;
+      var dependsIds = entry.value;
+
+      var dependsPriorities = dependsIds
+          .map((dependId) => taskByTaskIdMap[dependId]!.priority)
+          .toList();
+      var sumDependsPriority = dependsPriorities.isNotEmpty
+          ? dependsPriorities.reduce((a, b) => a + b)
+          : 0;
+
+      dependsPrioritiesByTaskId[taskId] = sumDependsPriority;
+    }
+
+    return dependsPrioritiesByTaskId;
   }
 }

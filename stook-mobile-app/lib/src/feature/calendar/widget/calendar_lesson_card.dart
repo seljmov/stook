@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../common/constants/constants.dart';
+import '../../../common/extension/time_of_day_x.dart';
 import '../models.dart';
 
 /// Карточка дня в расписании.
@@ -24,11 +26,11 @@ class CalendarLessonDay extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  lesson.timeStart.format(context),
+                  kTimeFormat.format(lesson.timeStart.toDateTime()),
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 Text(
-                  lesson.timeEnd.format(context),
+                  kTimeFormat.format(lesson.timeEnd.toDateTime()),
                   style: Theme.of(context)
                       .textTheme
                       .bodySmall!

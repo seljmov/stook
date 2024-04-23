@@ -1,25 +1,28 @@
 import 'package:drift/drift.dart';
 
-/// Таблица заметок.
-@DataClassName('Note')
-class Notes extends Table {
+import 'enums/resource_type.dart';
+
+/// Таблица ресурсов.
+class Resources extends Table {
   /// Идентификатор.
   IntColumn get id => integer().autoIncrement()();
 
   /// Название.
   TextColumn get title => text()();
 
-  /// Содержимое.
-  TextColumn get content => text()();
+  /// Описание.
+  TextColumn get description => text().nullable()();
+
+  /// URL.
+  TextColumn get url => text().nullable()();
+
+  /// Тип ресурса.
+  IntColumn get type => intEnum<ResourceType>()();
 
   /// Дата создания.
   DateTimeColumn get createdDate =>
       dateTime().withDefault(currentDateAndTime)();
 
-  /// Дата последнего изменения.
-  DateTimeColumn get lastModifiedDate =>
-      dateTime().withDefault(currentDateAndTime)();
-
-  /// Признак избранной заметки.
+  /// Признак избранного ресурса.
   BoolColumn get isFavorite => boolean().withDefault(const Constant(false))();
 }

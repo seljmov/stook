@@ -5,7 +5,7 @@ import 'importance_algorithm.dart';
 /// Интерфейс для решателя алгоритма.
 abstract class IAlgorithmSolver<T> {
   /// Получить самые важные элементы.
-  List<AlgorithmItem> get(
+  Future<List<AlgorithmItem>> get(
     List<T> items,
     AlgorithmItem Function(T item) getAlgorithmItem, [
     int count = 3,
@@ -25,7 +25,7 @@ class AlgorithmSolver<T> implements IAlgorithmSolver<T> {
         _algorithmImportance = algorithmImportance;
 
   @override
-  List<AlgorithmItem> get(
+  Future<List<AlgorithmItem>> get(
     List<T> items,
     AlgorithmItem Function(T item) getAlgorithmItem, [
     int count = 3,
@@ -35,10 +35,11 @@ class AlgorithmSolver<T> implements IAlgorithmSolver<T> {
       items,
       getAlgorithmItem,
     );
-    return _algorithmImportance.getMostImportantItems(
+    final importanceData = _algorithmImportance.getMostImportantItems(
       preparedData,
       count,
       currentDate,
     );
+    return Future.value(importanceData);
   }
 }

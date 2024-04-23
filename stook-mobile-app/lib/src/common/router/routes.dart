@@ -7,7 +7,7 @@ import '../../feature/notes/notes_screen.dart';
 import '../../feature/resources/resources_screen.dart';
 import '../../feature/calendar/calendar_screen.dart';
 import '../../feature/schedule_put/schedule_put_screen.dart';
-import '../../feature/tasks/tasks_screen.dart';
+import '../../feature/tasks/tasks_wrapper_screen.dart';
 
 /// Маршруты приложения.
 enum Routes with OctopusRoute {
@@ -29,7 +29,7 @@ enum Routes with OctopusRoute {
         Routes.home => const HomeScreen(),
         Routes.calendar => const CalendarScreen(),
         Routes.schedulePut => const SchedulePutScreen(),
-        Routes.tasks => const TasksScreen(),
+        Routes.tasks => const TasksWrapperScreen(),
         Routes.resources => const ResourcesScreen(),
         Routes.notes => const NotesScreen(),
       };

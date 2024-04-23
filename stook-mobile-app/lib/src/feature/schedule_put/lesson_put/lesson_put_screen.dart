@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stook_database/models/models.dart';
 
+import '../../../common/constants/constants.dart';
 import '../../../common/extension/time_of_day_x.dart';
 import '../models.dart';
 
@@ -282,6 +283,15 @@ class LessonTimesWidget extends StatelessWidget {
                         hourLabelText: 'Часы',
                         minuteLabelText: 'Минуты',
                         barrierLabel: 'Выбор времени начала занятия',
+                        builder: (context, child) => MediaQuery(
+                          data: MediaQuery.of(context)
+                              .copyWith(alwaysUse24HourFormat: true),
+                          child: Localizations.override(
+                            context: context,
+                            locale: const Locale('ru', 'RU'),
+                            child: child!,
+                          ),
+                        ),
                       );
                       if (timeOfDay == null && startNotifier.value != null) {
                         return;
@@ -293,7 +303,9 @@ class LessonTimesWidget extends StatelessWidget {
                       valueListenable: startNotifier,
                       builder: (context, time, child) {
                         return Text(
-                          time?.format(context) ?? 'Выбрать',
+                          time == null
+                              ? 'Выбрать'
+                              : kTimeFormat.format(time.toDateTime()),
                           style: TextStyle(
                             color: time == null ? Colors.grey : Colors.black,
                             fontSize: 16,
@@ -336,6 +348,15 @@ class LessonTimesWidget extends StatelessWidget {
                         hourLabelText: 'Часы',
                         minuteLabelText: 'Минуты',
                         barrierLabel: 'Выбор времени конца занятия',
+                        builder: (context, child) => MediaQuery(
+                          data: MediaQuery.of(context)
+                              .copyWith(alwaysUse24HourFormat: true),
+                          child: Localizations.override(
+                            context: context,
+                            locale: const Locale('ru', 'RU'),
+                            child: child!,
+                          ),
+                        ),
                       );
 
                       if (timeOfDay != null &&
@@ -357,7 +378,9 @@ class LessonTimesWidget extends StatelessWidget {
                       valueListenable: endNotifier,
                       builder: (context, time, child) {
                         return Text(
-                          time?.format(context) ?? 'Выбрать',
+                          time == null
+                              ? 'Выбрать'
+                              : kTimeFormat.format(time.toDateTime()),
                           style: TextStyle(
                             color: time == null ? Colors.grey : Colors.black,
                             fontSize: 16,

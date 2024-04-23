@@ -32,15 +32,15 @@ class CalendarLessonEntity {
 class CalendarTaskEntity {
   final int id;
   final String title;
-  final DateTime deadlineDate;
-  final TaskPriority priority;
+  final DateTime? deadlineDate;
+  final TaskPriority? priority;
   final TaskStatus status;
 
   const CalendarTaskEntity({
     required this.id,
     required this.title,
-    required this.deadlineDate,
-    required this.priority,
+    this.deadlineDate,
+    this.priority,
     required this.status,
   });
 }

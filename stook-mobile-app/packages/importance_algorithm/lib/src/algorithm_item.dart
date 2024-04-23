@@ -11,7 +11,7 @@ class AlgorithmItem {
     required this.id,
     required this.deadlineDate,
     required this.priority,
-    required this.dependsPriority,
+    this.dependsPriority = 0,
     required this.dependsOnTasksIds,
   });
 

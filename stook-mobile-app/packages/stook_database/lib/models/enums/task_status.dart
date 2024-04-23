@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+/// Возвращает статусы для планирования.
+List<TaskStatus> get planningStatuses =>
+    [TaskStatus.pending, TaskStatus.inProgress];
+
 /// Статус задачи.
 enum TaskStatus {
   /// Задача создана, но еще не начата.
@@ -48,4 +52,12 @@ extension TaskStatusExtension on TaskStatus {
         throw Exception('Unknown task status: $this');
     }
   }
+
+  /// Возвращает индекс сортировки для перечисления.
+  int get sortIndex => switch (this) {
+        TaskStatus.inProgress => 0,
+        TaskStatus.pending => 1,
+        TaskStatus.overdue => 2,
+        TaskStatus.completed => 3,
+      };
 }
