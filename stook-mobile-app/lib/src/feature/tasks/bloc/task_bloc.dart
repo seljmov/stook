@@ -105,7 +105,13 @@ class TaskBloc extends ITaskBloc {
         await _databaseContext.tasksDao.getTaskById(event.task.id);
     await _databaseContext.transaction(() async {
       if (existedTask != null) {
-        await _databaseContext.tasksDao.updateTask(event.task.toTask());
+        var updatedTask = event.task;
+        if (event.task.status == TaskStatus.overdue &&
+            event.task.deadlineDate != null &&
+            event.task.deadlineDate!.isAfter(DateTime.now())) {
+          updatedTask = updatedTask.copyWith(status: TaskStatus.pending);
+        }
+        await _databaseContext.tasksDao.updateTask(updatedTask.toTask());
       } else {
         await _databaseContext.tasksDao
             .insertTask(event.task.toTaskCompanion());
