@@ -56,6 +56,7 @@ class MyApp extends StatelessWidget {
         dark: darkThemeData,
         initial: savedTheme ?? AdaptiveThemeMode.light,
         builder: (light, dark) => MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Stook Mobile App',
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,
@@ -65,10 +66,8 @@ class MyApp extends StatelessWidget {
           supportedLocales: const [
             Locale('ru', 'RU'),
           ],
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-          ),
+          theme: light,
+          darkTheme: dark,
           home: LoaderOverlay(
             overlayColor: Colors.white.withOpacity(0.75),
             child: const App(),

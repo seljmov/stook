@@ -27,6 +27,10 @@ final lightThemeData = ThemeData(
       systemNavigationBarIconBrightness: Brightness.light,
     ),
   ),
+  floatingActionButtonTheme: const FloatingActionButtonThemeData(
+    backgroundColor: kPrimaryColor,
+    foregroundColor: kLightTextPrimaryColor,
+  ),
   textTheme: TextTheme(
     displayLarge: const TextStyle(
       fontSize: 64,
