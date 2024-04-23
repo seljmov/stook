@@ -94,6 +94,7 @@ class _ThesisTabBarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final titlePickedStyle = context.textTheme.titleMedium!.copyWith(
       color: kDarkTextPrimaryColor,
+      fontSize: 14,
     );
     final titleStyle = titlePickedStyle.copyWith(
       color: context.isDarkMode
@@ -105,7 +106,7 @@ class _ThesisTabBarItem extends StatelessWidget {
         color:
             isPicked ? Colors.deepPurple : context.currentTheme.cardTheme.color,
         borderRadius: const BorderRadius.all(
-          Radius.circular(8),
+          Radius.circular(16.0),
         ),
       ),
       child: Padding(
