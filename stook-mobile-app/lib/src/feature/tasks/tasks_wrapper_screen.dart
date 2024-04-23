@@ -13,8 +13,21 @@ import 'task_put/task_put_screen.dart';
 import 'widget/tasks_screen.dart';
 
 /// Страница экрана задач.
-class TasksWrapperScreen extends StatelessWidget {
+class TasksWrapperScreen extends StatefulWidget {
   const TasksWrapperScreen({super.key});
+
+  @override
+  State<TasksWrapperScreen> createState() => _TasksWrapperScreenState();
+}
+
+class _TasksWrapperScreenState extends State<TasksWrapperScreen> {
+  final tabIndexNotifier = ValueNotifier<int>(0);
+
+  @override
+  void dispose() {
+    tabIndexNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,18 +38,14 @@ class TasksWrapperScreen extends StatelessWidget {
           initial: (_) => TaskScope.load(context),
           loaderShow: (_) => context.loaderOverlay.show(),
           loaderHide: (_) => context.loaderOverlay.hide(),
-          openPutTaskScreen: (state) async {
-            final value =
-                await Navigator.of(context).push<int>(MaterialPageRoute(
-              builder: (context) => TaskPutScreen(
-                task: state.task,
-                allTasks: state.allTasks,
-                fromScreenIndex: state.fromScreenIndex,
-              ),
-            ));
-            debugPrint('openPutTaskScreen: $value');
-            TaskScope.load(context);
-          },
+          openPutTaskScreen: (state) => Navigator.of(context)
+              .push(MaterialPageRoute(
+                  builder: (context) => TaskPutScreen(
+                        task: state.task,
+                        allTasks: state.allTasks,
+                        fromScreenIndex: state.fromScreenIndex,
+                      )))
+              .whenComplete(() => TaskScope.load(context)),
         );
       },
       builder: (context, state) {
@@ -58,9 +67,15 @@ class TasksWrapperScreen extends StatelessWidget {
               ),
             ],
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => TaskScope.openPutTask(context),
-            child: const Icon(Icons.add),
+          floatingActionButton: ValueListenableBuilder(
+            valueListenable: tabIndexNotifier,
+            builder: (context, tabIndex, child) => FloatingActionButton(
+              onPressed: () => TaskScope.openPutTask(
+                context,
+                fromScreenIndex: tabIndex,
+              ),
+              child: const Icon(Icons.add),
+            ),
           ),
           body: Center(
             child: state.whenOrNull(
@@ -72,7 +87,9 @@ class TasksWrapperScreen extends StatelessWidget {
                   child: Text('Задачи пусты'),
                 ),
                 replacement: ThesisTabBar(
+                  initialScreenIndex: tabIndexNotifier.value,
                   tabs: const ['Все', 'Важные'],
+                  onTap: (index) => tabIndexNotifier.value = index,
                   children: [
                     TasksScreen(tasks: tasks),
                     TaskImportanceScreen(

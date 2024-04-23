@@ -68,6 +68,7 @@ class TaskBloc extends ITaskBloc {
     Emitter<TaskState> emit,
   ) async {
     emit(const TaskState.loaderShow());
+    final allEntities = await _getTasks();
     final entities = (await _getTasks())
         .where((task) => planningStatuses.contains(task.status))
         .toList();
@@ -84,7 +85,7 @@ class TaskBloc extends ITaskBloc {
         .getTaskSubtaskRelations(event.taskId!);
     final taskDependOns = await _databaseContext.taskDependOnRelationsDao
         .getTaskDependOnRelations(event.taskId!);
-    final taskEntity = entities
+    final taskEntity = allEntities
         .firstWhere((task) => task.id == event.taskId)
         .copyWith(subtasksIds: taskSubtasks, dependOnTasksIds: taskDependOns);
     emit(const TaskState.loaderHide());
