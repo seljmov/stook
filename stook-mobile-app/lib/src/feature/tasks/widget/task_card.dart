@@ -92,10 +92,10 @@ class TaskCard extends StatelessWidget {
             visible: onPressed != null,
             child: IconButton(
               onPressed: () => onPressed?.call(task),
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_forward_ios_outlined,
                 size: 16,
-                color: Colors.grey.shade700,
+                color: Colors.grey,
               ),
             ),
           ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:stook_database/models/models.dart';
 
 import '../../../common/constants/constants.dart';
 import '../../../common/extension/time_of_day_x.dart';
+import '../../../common/widget/type_card.dart';
 import '../models.dart';
 
 /// Карточка дня в расписании.
@@ -47,6 +49,11 @@ class CalendarLessonDay extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              TypeCard(
+                title: lesson.type.name,
+                color: lesson.type.color,
+              ),
+              const SizedBox(height: 2.0),
               Text(
                 lesson.name,
                 style: Theme.of(context)

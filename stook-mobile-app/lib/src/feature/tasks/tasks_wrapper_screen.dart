@@ -1,10 +1,7 @@
-import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:stook_database/database_context.dart';
 
-import '../../common/infrastructure/di_configurator.dart';
 import '../../common/widget/thesis_tab_bar.dart';
 import 'bloc/task_bloc.dart';
 import 'bloc/task_scope.dart';
@@ -54,18 +51,6 @@ class _TasksWrapperScreenState extends State<TasksWrapperScreen> {
             title: const Text('Задачи'),
             centerTitle: false,
             surfaceTintColor: Colors.transparent,
-            actions: [
-              IconButton(
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => DriftDbViewer(
-                      injector.get<DatabaseContext>(),
-                    ),
-                  ),
-                ),
-                icon: const Icon(Icons.insert_comment_sharp),
-              ),
-            ],
           ),
           floatingActionButton: ValueListenableBuilder(
             valueListenable: tabIndexNotifier,

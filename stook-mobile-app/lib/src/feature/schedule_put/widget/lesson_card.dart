@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:stook_database/models/models.dart';
 
 import '../../../common/constants/constants.dart';
 import '../../../common/extension/time_of_day_x.dart';
+import '../../../common/widget/type_card.dart';
 import '../models.dart';
-import 'lesson_type_card.dart';
 
 /// Карточка занятия.
 class LessonCard extends StatelessWidget {
@@ -85,7 +86,10 @@ class LessonCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        LessonTypeCard(lessonType: lesson.type),
+                        TypeCard(
+                          title: lesson.type.name,
+                          color: lesson.type.color,
+                        ),
                         Text(
                           lesson.name,
                           style: Theme.of(context)
