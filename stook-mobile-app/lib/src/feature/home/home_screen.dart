@@ -42,7 +42,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedScreenNotifier = ValueNotifier<int>(1);
+    final selectedScreenNotifier = ValueNotifier<int>(2);
     return ValueListenableBuilder<int>(
       valueListenable: selectedScreenNotifier,
       builder: (context, selectedPage, child) {

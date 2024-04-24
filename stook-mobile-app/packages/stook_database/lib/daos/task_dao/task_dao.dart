@@ -14,9 +14,8 @@ class TasksDao extends DatabaseAccessor<DatabaseContext> with _$TasksDaoMixin {
   /// Получить все задачи.
   Future<List<Task>> getAllTasks() async {
     await transaction(() async {
-      final now = DateTime.now().add(const Duration(days: 1));
       final needUpdateTasks = await (select(tasks)
-            ..where((t) => t.deadlineDate.isSmallerThanValue(now)))
+            ..where((t) => t.deadlineDate.isSmallerThanValue(DateTime.now())))
           .get();
       for (final task in needUpdateTasks) {
         await updateTask(task.copyWith(status: TaskStatus.overdue));
