@@ -13,7 +13,7 @@ final kDateFormat = DateFormat('dd.MM.yyyy г.', 'ru_RU');
 final kTimeFormat = DateFormat('HH:mm', 'ru_RU');
 
 /// Форматтер даты и времени.
-final kDateTimeFormat = DateFormat('dd.MM.yyyy HH:mm', 'ru_RU');
+final kDateTimeFormat = DateFormat('dd.MM.yyyy, HH:mm', 'ru_RU');
 
 /// Физика скролла по умолчанию.
 const kDefaultPhysics = BouncingScrollPhysics();

@@ -11,6 +11,7 @@ import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
 import 'daos/lesson_dao/lesson_dao.dart';
+import 'daos/note_dao/note_dao.dart';
 import 'daos/task_dao/task_dao.dart';
 import 'daos/task_depend_on_relation_dao/task_depend_on_relation_dao.dart';
 import 'daos/task_subtask_relation_dao/task_subtask_relation_dao.dart';
@@ -33,6 +34,7 @@ part 'database_context.g.dart';
   daos: [
     LessonsDao,
     TasksDao,
+    NoteDao,
     TaskSubtaskRelationsDao,
     TaskDependOnRelationsDao,
   ],

@@ -80,19 +80,12 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
                           const Text('Вы уверены, что хотите удалить задачу?'),
                       actions: [
                         TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(false);
-                          },
-                          child: const Text('Отмена'),
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text('Да'),
                         ),
                         TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(true);
-                          },
-                          child: const Text(
-                            'Удалить',
-                            style: TextStyle(color: Colors.red),
-                          ),
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text('Нет'),
                         ),
                       ],
                     );
@@ -153,7 +146,6 @@ class _TaskPutScreenState extends State<TaskPutScreen> {
                   subtasksIds: subTasksIdsNotifier.value,
                   dependOnTasksIds: dependsTasksIdsNotifier.value,
                 );
-                debugPrint('Putted task: ${puttedTask.deadlineDate}');
                 TaskScope.savePuttedTask(context, task: puttedTask);
                 Navigator.of(context).pop();
               },

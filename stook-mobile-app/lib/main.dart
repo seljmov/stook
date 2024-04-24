@@ -13,6 +13,7 @@ import 'src/common/themes/dark_theme.dart';
 import 'src/common/themes/light_theme.dart';
 import 'src/common/widget/app.dart';
 import 'src/feature/calendar/bloc/calendar_bloc.dart';
+import 'src/feature/notes/bloc/note_bloc.dart';
 import 'src/feature/schedule_put/bloc/schedule_put_bloc.dart';
 import 'src/feature/tasks/bloc/task_bloc.dart';
 
@@ -49,6 +50,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<ITaskBloc>(
           create: (context) => injector.get<ITaskBloc>(),
+        ),
+        BlocProvider<INoteBloc>(
+          create: (context) => injector.get<INoteBloc>(),
         ),
       ],
       child: AdaptiveTheme(

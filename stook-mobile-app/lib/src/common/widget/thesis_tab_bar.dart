@@ -11,11 +11,13 @@ class ThesisTabBar extends StatefulWidget {
     required this.children,
     this.initialScreenIndex = 0,
     this.onTap,
+    this.tabSpacing = 20.0,
   });
 
   final List<String> tabs;
   final List<Widget> children;
   final int initialScreenIndex;
+  final double? tabSpacing;
   final void Function(int)? onTap;
 
   @override
@@ -71,7 +73,7 @@ class _ThesisTabBarState extends State<ThesisTabBar> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: widget.tabSpacing),
             widget.children[currentIndex],
           ],
         );

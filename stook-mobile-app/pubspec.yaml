@@ -24,6 +24,8 @@ dependencies:
     path: 'packages/stook_database'
   stook_importance_algorithm:
     path: 'packages/importance_algorithm'
+  flutter_markdown_editor:
+    path: 'packages/flutter_markdown_editor'
   drift_db_viewer: ^2.1.0
   equatable: ^2.0.5
   bloc_concurrency: ^0.2.5
@@ -34,6 +36,7 @@ dependencies:
   intl: ^0.18.1
   flutter_localization: ^0.2.0
   adaptive_theme: ^3.6.0
+  flutter_markdown: ^0.7.1
 
 dev_dependencies:
   flutter_test:
