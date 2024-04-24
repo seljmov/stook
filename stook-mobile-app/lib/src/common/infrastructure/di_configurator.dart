@@ -4,6 +4,7 @@ import 'package:stook_importance_algorithm/main.dart';
 
 import '../../feature/calendar/bloc/calendar_bloc.dart';
 import '../../feature/notes/bloc/note_bloc.dart';
+import '../../feature/resources/bloc/resource_bloc.dart';
 import '../../feature/schedule_put/bloc/schedule_put_bloc.dart';
 import '../../feature/tasks/bloc/task_bloc.dart';
 import '../../feature/tasks/entities/task_entity.dart';
@@ -49,6 +50,9 @@ class DiConfigurator {
     );
     injector.registerDependency<INoteBloc>(
       () => NoteBloc(databaseContext: injector.get<DatabaseContext>()),
+    );
+    injector.registerDependency<IResourceBloc>(
+      () => ResourceBloc(databaseContext: injector.get<DatabaseContext>()),
     );
   }
 }

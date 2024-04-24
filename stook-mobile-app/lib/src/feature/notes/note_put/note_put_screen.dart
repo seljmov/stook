@@ -118,7 +118,6 @@ class _NotePutScreenState extends State<NotePutScreen> {
                 lastModifiedDate: DateTime.now(),
                 isFavorite: isFavoriteNotifier.value,
               );
-              debugPrint('puttedNote isFavorite: ${puttedNote.isFavorite}');
               NoteScope.savePuttedNote(
                 context,
                 note: puttedNote,

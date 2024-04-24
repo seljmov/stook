@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// Тип ресурса.
 enum ResourceType {
   /// Статья.
@@ -26,6 +28,22 @@ extension ResourceTypeExtension on ResourceType {
         return 'Ссылка';
       case ResourceType.other:
         return 'Другое';
+      default:
+        throw ArgumentError('Unknown resource type: $this');
+    }
+  }
+
+  /// Возвращает цвет типа ресурса.
+  Color get color {
+    switch (this) {
+      case ResourceType.article:
+        return Colors.redAccent;
+      case ResourceType.video:
+        return Colors.blueAccent;
+      case ResourceType.link:
+        return Colors.green;
+      case ResourceType.other:
+        return Colors.grey;
       default:
         throw ArgumentError('Unknown resource type: $this');
     }
