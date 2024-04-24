@@ -823,7 +823,7 @@ packages:
       path: "packages/stook_database"
       relative: true
     source: path
-    version: "0.0.2"
+    version: "0.0.3"
   stook_importance_algorithm:
     dependency: "direct main"
     description:

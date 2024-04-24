@@ -24,10 +24,6 @@ class DayCard extends StatelessWidget {
       return 'Название занятия не может быть пустым';
     }
 
-    if (day.lessons.any((l) => l.id != lesson.id && l.name == lesson.name)) {
-      return 'Занятие с таким названием уже существует';
-    }
-
     final intersectedLesson = day.lessons.firstWhereOrNull(
       (l) =>
           l.id != lesson.id &&
