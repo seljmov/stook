@@ -69,8 +69,12 @@ class TaskBloc extends ITaskBloc {
   ) async {
     emit(const TaskState.loaderShow());
     final allEntities = await _getTasks();
+    final allSubtasksIds =
+        allEntities.expand((task) => task.subtasksIds).toSet().toList();
     final entities = (await _getTasks())
-        .where((task) => planningStatuses.contains(task.status))
+        .where((task) =>
+            planningStatuses.contains(task.status) ||
+            allSubtasksIds.contains(task.id))
         .toList();
     if (event.taskId == null) {
       emit(const TaskState.loaderHide());
@@ -226,9 +230,16 @@ class TaskBloc extends ITaskBloc {
   ) async {
     emit(const TaskState.loaderShow());
     final tasks = await _getTasks();
+    final taskStatusById = Map<int, TaskStatus>.fromIterable(
+      tasks,
+      key: (task) => task.id,
+      value: (task) => task.status,
+    );
     final mostImportanceTasksItems = await _algorithmSolver.get(
       tasks
           .where((task) =>
+              task.subtasksIds.every((subtaskId) =>
+                  taskStatusById[subtaskId] == TaskStatus.completed) &&
               planningStatuses.contains(task.status) &&
               task.deadlineDate != null &&
               task.priority != null)
