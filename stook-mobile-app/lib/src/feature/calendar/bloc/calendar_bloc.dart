@@ -44,23 +44,25 @@ class CalendarBloc extends ICalendarBloc {
       return;
     }
 
-    final lessonsByWeek = lessons.groupListsBy((lessons) => lessons.weekNumber);
+    final lessonsByWeek =
+        lessons.groupListsBy((lessons) => lessons.weekNumber - 1);
 
     final prefs = await SharedPreferences.getInstance();
-    var currentWeekNumber = prefs.getInt('currentWeekNumber') ?? 1;
+    var currentWeekNumber = (prefs.getInt('currentWeekNumber') ?? 1) - 1;
     final currentDate =
         prefs.getString('currentDate') ?? DateTime.now().toString();
+
     final weeksBetween = _countWeeks(
       DateTime.parse(currentDate),
       DateTime.now(),
     );
-    currentWeekNumber =
-        (currentWeekNumber + weeksBetween) % lessonsByWeek.length;
+    currentWeekNumber += weeksBetween;
+    currentWeekNumber %= lessonsByWeek.length;
 
     final scheduleDays = <CalendarDayEntity>[];
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    for (var i = 0; i < 21; i++) {
+    for (var i = 0; i < 42; i++) {
       final date = today.add(Duration(days: i));
       final dayOfWeek = date.weekday;
       final lessonsByDay = lessonsByWeek[currentWeekNumber]
@@ -70,7 +72,7 @@ class CalendarBloc extends ICalendarBloc {
       final scheduleDay = CalendarDayEntity(
         date: date,
         lessons: lessons
-            .where((lesson) => lesson.weekNumber == currentWeekNumber)
+            .where((lesson) => lesson.weekNumber == currentWeekNumber + 1)
             .map((lesson) {
           return CalendarLessonEntity(
             name: lesson.title,
@@ -84,9 +86,8 @@ class CalendarBloc extends ICalendarBloc {
       );
 
       if (dayOfWeek == 7) {
-        currentWeekNumber += 2;
-        currentWeekNumber %= lessonsByWeek.length;
         currentWeekNumber++;
+        currentWeekNumber %= lessonsByWeek.length;
       }
 
       scheduleDays.add(scheduleDay);
