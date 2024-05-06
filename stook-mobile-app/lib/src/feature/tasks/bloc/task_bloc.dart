@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stook_database/database_context.dart';
+import 'package:stook_importance_algorithm/main.dart';
 import 'package:stook_shared/stook_shared.dart';
 
 import '../../../common/extension/task_entity_x.dart';
-import '../algorithm/algorithm_runner.dart';
 import '../repositories/importance_tasks_storage.dart';
 
 part 'task_bloc.freezed.dart';

@@ -1,8 +1,6 @@
 import 'package:stook_importance_algorithm/main.dart';
 import 'package:stook_shared/stook_shared.dart';
 
-import 'algorithm_result.dart';
-
 /// Интерфейс для реализации алгоритма вычисления наиважнейших задач.
 abstract class IAlgorithmRunner {
   /// Запускает алгоритм вычисления наиважнейших задач, где [tasks] - список задач.

@@ -1,6 +1,6 @@
 name: stook_importance_algorithm
 description: "A algorithm to calculate the importance of a tasks"
-version: 0.0.2
+version: 0.0.3
 publish_to: 'none'
 
 environment:

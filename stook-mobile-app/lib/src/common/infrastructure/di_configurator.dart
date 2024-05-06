@@ -6,7 +6,6 @@ import '../../feature/calendar/bloc/calendar_bloc.dart';
 import '../../feature/notes/bloc/note_bloc.dart';
 import '../../feature/resources/bloc/resource_bloc.dart';
 import '../../feature/schedule_put/bloc/schedule_put_bloc.dart';
-import '../../feature/tasks/algorithm/algorithm_runner.dart';
 import '../../feature/tasks/bloc/task_bloc.dart';
 import '../../feature/tasks/repositories/importance_tasks_storage.dart';
 

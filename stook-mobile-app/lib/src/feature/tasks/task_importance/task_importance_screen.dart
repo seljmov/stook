@@ -18,6 +18,7 @@ class TaskImportanceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: Вынести сортировку в блок.
     final sortedTasks = tasks.toList();
     sortedTasks.sort(
       (a, b) => (a.deadlineDate?.millisecondsSinceEpoch ?? 0).compareTo(
