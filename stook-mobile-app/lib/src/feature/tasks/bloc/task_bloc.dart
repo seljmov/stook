@@ -67,8 +67,10 @@ class TaskBloc extends ITaskBloc {
   ) async {
     emit(const TaskState.loaderShow());
     final allEntities = await _getTasks();
-    final allSubtasksIds =
-        allEntities.expand((task) => task.subtasksIds).toSet().toList();
+    final allSubtasksIds = allEntities
+        .expand((task) => task.subtasksIds + task.dependOnTasksIds)
+        .toSet()
+        .toList();
     final entities = (await _getTasks())
         .where((task) =>
             planningStatuses.contains(task.status) ||
