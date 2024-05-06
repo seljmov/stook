@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:stook_shared/stook_shared.dart';
 
 import '../../../common/constants/constants.dart';
 import '../bloc/task_scope.dart';
-import '../entities/task_base_entity.dart';
 import '../widget/task_card.dart';
 
 /// Экран важности задачи.

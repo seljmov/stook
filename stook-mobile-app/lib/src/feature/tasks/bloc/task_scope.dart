@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stook_shared/stook_shared.dart';
 
-import '../entities/task_entity.dart';
 import 'task_bloc.dart';
 
 /// Область видимости блока задач.

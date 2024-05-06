@@ -1,11 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stook_database/database_context.dart';
-import 'package:stook_importance_algorithm/main.dart';
 import 'package:stook_shared/stook_shared.dart';
 
-import '../entities/task_base_entity.dart';
-import '../entities/task_entity.dart';
+import '../../../common/extension/task_entity_x.dart';
+import '../algorithm/algorithm_runner.dart';
 import '../repositories/importance_tasks_storage.dart';
 
 part 'task_bloc.freezed.dart';
@@ -19,15 +18,15 @@ abstract class ITaskBloc extends Bloc<TaskEvent, TaskState> {
 class TaskBloc extends ITaskBloc {
   final DatabaseContext _databaseContext;
   final IImportanceTasksStorage _importanceTasksStorage;
-  final IAlgorithmSolver<TaskEntity> _algorithmSolver;
+  final IAlgorithmRunner _algorithmRunner;
 
   TaskBloc({
     required DatabaseContext databaseContext,
     required IImportanceTasksStorage importanceTasksStorage,
-    required IAlgorithmSolver<TaskEntity> algorithmSolver,
+    required IAlgorithmRunner algorithmRunner,
   })  : _databaseContext = databaseContext,
         _importanceTasksStorage = importanceTasksStorage,
-        _algorithmSolver = algorithmSolver {
+        _algorithmRunner = algorithmRunner {
     on<TaskEvent>(
       (event, emit) => event.map(
         load: (event) => _load(event, emit),
@@ -229,38 +228,16 @@ class TaskBloc extends ITaskBloc {
   ) async {
     emit(const TaskState.loaderShow());
     final tasks = await _getTasks();
-    final taskStatusById = Map<int, TaskStatus>.fromIterable(
-      tasks,
-      key: (task) => task.id,
-      value: (task) => task.status,
-    );
-    final mostImportanceTasksItems = await _algorithmSolver.get(
-      tasks
-          .where((task) =>
-              task.subtasksIds.every((subtaskId) =>
-                  taskStatusById[subtaskId] == TaskStatus.completed) &&
-              planningStatuses.contains(task.status) &&
-              task.deadlineDate != null &&
-              task.priority != null)
-          .toList(),
-      (task) => AlgorithmItem(
-          id: task.id,
-          deadlineDate: task.deadlineDate!,
-          priority: task.priority!.toPriorityNumber,
-          dependsOnTasksIds: task.dependOnTasksIds),
-    );
-
-    if (mostImportanceTasksItems.isNotEmpty) {
-      final mostImportanceTasksItemsIds =
-          mostImportanceTasksItems.map((item) => item.id).toList();
-      await _importanceTasksStorage
-          .saveMostImportanceTasks(mostImportanceTasksItemsIds);
+    final algorithmResult = await _algorithmRunner.run(tasks);
+    if (algorithmResult.taskIds.isNotEmpty) {
+      await _importanceTasksStorage.saveMostImportanceTasks(
+        algorithmResult.taskIds,
+      );
     }
 
     final taskBaseEntities = tasks.map((task) => task.toBaseEntity()).toList();
     final tasksWithImportance = taskBaseEntities
-        .where((task) =>
-            mostImportanceTasksItems.any((item) => item.id == task.id))
+        .where((task) => algorithmResult.taskIds.contains(task.id))
         .toList();
 
     final lastImportanceAlgorithmRunTime =

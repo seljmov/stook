@@ -49,4 +49,17 @@ class TaskEntity {
       dependOnTasksIds: dependOnTasksIds ?? this.dependOnTasksIds,
     );
   }
+
+  /// Создает базовую сущность задачи.
+  TaskBaseEntity toBaseEntity() {
+    return TaskBaseEntity(
+      id: id,
+      title: title,
+      description: description,
+      createdDate: createdDate,
+      deadlineDate: deadlineDate,
+      priority: priority,
+      status: status,
+    );
+  }
 }

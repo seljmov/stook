@@ -4,7 +4,6 @@ class AlgorithmItem {
   final DateTime deadlineDate;
   final int priority;
   final int dependsPriority;
-  final List<int> dependsOnTasksIds;
 
   /// Конструктор элемента алгоритма.
   AlgorithmItem({
@@ -12,7 +11,6 @@ class AlgorithmItem {
     required this.deadlineDate,
     required this.priority,
     this.dependsPriority = 0,
-    required this.dependsOnTasksIds,
   });
 
   /// Создать копию элемента алгоритма.
@@ -28,7 +26,6 @@ class AlgorithmItem {
       deadlineDate: deadlineDate ?? this.deadlineDate,
       priority: priority ?? this.priority,
       dependsPriority: dependsPriority ?? this.dependsPriority,
-      dependsOnTasksIds: dependsOnTasksIds ?? this.dependsOnTasksIds,
     );
   }
 }

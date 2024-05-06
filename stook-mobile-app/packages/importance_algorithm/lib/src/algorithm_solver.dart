@@ -1,45 +1,53 @@
-import 'algorithm_data_preparer.dart';
 import 'algorithm_item.dart';
-import 'importance_algorithm.dart';
 
-/// Интерфейс для решателя алгоритма.
-abstract class IAlgorithmSolver<T> {
+/// Интерфейс для алгоритма важности.
+abstract class IAlgorithmSolver {
   /// Получить самые важные элементы.
-  Future<List<AlgorithmItem>> get(
-    List<T> items,
-    AlgorithmItem Function(T item) getAlgorithmItem, [
+  List<int> getMostImportantItems(
+    List<AlgorithmItem> items, [
     int count = 3,
     DateTime? currentDate,
   ]);
 }
 
-/// Решатель алгоритма.
-class AlgorithmSolver<T> implements IAlgorithmSolver<T> {
-  final IAlgorithmDataPreparer _algorithmDataPreparer;
-  final IAlgorithmImportance _algorithmImportance;
-
-  AlgorithmSolver({
-    required IAlgorithmDataPreparer algorithmDataPreparer,
-    required IAlgorithmImportance algorithmImportance,
-  })  : _algorithmDataPreparer = algorithmDataPreparer,
-        _algorithmImportance = algorithmImportance;
-
+/// Алгоритм важности.
+class AlgorithmSolver implements IAlgorithmSolver {
   @override
-  Future<List<AlgorithmItem>> get(
-    List<T> items,
-    AlgorithmItem Function(T item) getAlgorithmItem, [
-    int count = 3,
-    DateTime? currentDate,
-  ]) {
-    final preparedData = _algorithmDataPreparer.getPreparedData(
-      items,
-      getAlgorithmItem,
-    );
-    final importanceData = _algorithmImportance.getMostImportantItems(
-      preparedData,
-      count,
-      currentDate,
-    );
-    return Future.value(importanceData);
+  List<int> getMostImportantItems(List<AlgorithmItem> items,
+      [int count = 3, DateTime? currentDate]) {
+    if (items.isEmpty) {
+      return [];
+    }
+    if (items.length <= count) {
+      return items.map((e) => e.id).toList();
+    }
+
+    currentDate ??= DateTime.now();
+    final algorithmItems = _getAlgorithmItemsWithImportance(items, currentDate);
+    final sortedItems = algorithmItems.entries.toList()
+      ..sort((a, b) => b.key.compareTo(a.key));
+
+    return sortedItems.take(count).map((e) => e.value.id).toList();
+  }
+
+  /// Получить самые важные элементы.
+  Map<double, AlgorithmItem> _getAlgorithmItemsWithImportance(
+    List<AlgorithmItem> algorithmItems,
+    DateTime now,
+  ) {
+    return {
+      for (final item in algorithmItems) _calculateImportance(item, now): item
+    };
+  }
+
+  /// Получить важность задачи
+  double _calculateImportance(AlgorithmItem item, DateTime now) {
+    return (item.priority * (item.dependsPriority + 1)) /
+        (_findSecondsBetweenDates(now, item.deadlineDate) + 1);
+  }
+
+  /// Получить разницу между датами в секундах
+  int _findSecondsBetweenDates(DateTime first, DateTime second) {
+    return second.difference(first).inSeconds;
   }
 }
