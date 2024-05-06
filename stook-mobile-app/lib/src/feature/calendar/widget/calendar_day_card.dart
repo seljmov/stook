@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stook_database/models/enums/task_priority.dart';
+import 'package:stook_shared/stook_shared.dart';
 
 import '../../../common/constants/constants.dart';
 import '../../../common/extension/date_time_x.dart';

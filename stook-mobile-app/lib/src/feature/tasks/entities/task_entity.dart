@@ -1,5 +1,5 @@
 import 'package:stook_database/database_context.dart';
-import 'package:stook_database/models/enums/enums.dart';
+import 'package:stook_shared/stook_shared.dart';
 
 import 'task_base_entity.dart';
 

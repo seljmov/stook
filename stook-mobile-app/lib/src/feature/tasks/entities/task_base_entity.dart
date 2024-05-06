@@ -1,4 +1,4 @@
-import 'package:stook_database/models/enums/enums.dart';
+import 'package:stook_shared/stook_shared.dart';
 
 /// Базовая сущность задачи.
 class TaskBaseEntity {

@@ -1,9 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stook_database/database_context.dart';
-import 'package:stook_database/models/enums/task_priority.dart';
-import 'package:stook_database/models/enums/task_status.dart';
 import 'package:stook_importance_algorithm/main.dart';
+import 'package:stook_shared/stook_shared.dart';
 
 import '../entities/task_base_entity.dart';
 import '../entities/task_entity.dart';

@@ -11,6 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  stook_shared:
+    path: '../stook_shared'
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
