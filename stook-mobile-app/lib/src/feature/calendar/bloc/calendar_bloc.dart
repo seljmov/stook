@@ -57,12 +57,14 @@ class CalendarBloc extends ICalendarBloc {
       DateTime.now(),
     );
     currentWeekNumber += weeksBetween;
-    currentWeekNumber %= lessonsByWeek.length;
+    if (lessonsByWeek.isNotEmpty) {
+      currentWeekNumber %= lessonsByWeek.length;
+    }
 
     final scheduleDays = <CalendarDayEntity>[];
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    for (var i = 0; i < 42; i++) {
+    for (var i = 0; i < 21; i++) {
       final date = today.add(Duration(days: i));
       final dayOfWeek = date.weekday;
       final lessonsByDay = lessonsByWeek[currentWeekNumber]
@@ -87,7 +89,9 @@ class CalendarBloc extends ICalendarBloc {
 
       if (dayOfWeek == 7) {
         currentWeekNumber++;
-        currentWeekNumber %= lessonsByWeek.length;
+        if (lessonsByWeek.isNotEmpty) {
+          currentWeekNumber %= lessonsByWeek.length;
+        }
       }
 
       scheduleDays.add(scheduleDay);
