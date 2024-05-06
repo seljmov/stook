@@ -81,7 +81,12 @@ class TaskCard extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 2.0),
                     child: Text(
-                        'Крайний срок: ${kDateFormat.format(task.deadlineDate!)}'),
+                      'Крайний срок: ${kDateFormat.format(task.deadlineDate!)}',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                      ),
+                    ),
                   ),
               ],
             ),

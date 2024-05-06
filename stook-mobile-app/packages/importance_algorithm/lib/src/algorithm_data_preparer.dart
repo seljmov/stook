@@ -7,7 +7,6 @@ import 'algorithm_item.dart';
 /// Интерфейс для подготовки данных для алгоритма.
 abstract class IAlgorithmDataPreparer {
   /// Подготовить данные для алгоритма.
-  /// [data] - данные для подготовки.
   List<AlgorithmItem> getPreparedData(List<TaskEntity> data);
 }
 
@@ -30,9 +29,9 @@ class AlgorithmDataPreparer implements IAlgorithmDataPreparer {
     final algorithmItems = tasks
         .where((task) =>
             planningStatuses.contains(task.status) &&
-                (task.subtasksIds.isEmpty ||
-                    task.subtasksIds.every((subtaskId) => !planningStatuses
-                        .contains(taskStatusById[subtaskId]))) ||
+            (task.subtasksIds.isEmpty ||
+                task.subtasksIds.every((subtaskId) =>
+                    !planningStatuses.contains(taskStatusById[subtaskId]))) &&
             (task.dependOnTasksIds.isEmpty ||
                 task.dependOnTasksIds.every((dependOnId) =>
                     !planningStatuses.contains(taskStatusById[dependOnId]))))

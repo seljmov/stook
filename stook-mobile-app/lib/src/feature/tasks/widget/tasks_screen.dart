@@ -17,6 +17,11 @@ class TasksScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final sortedTasks = tasks.toList();
     sortedTasks.sort(
+      (a, b) => (a.deadlineDate?.millisecondsSinceEpoch ?? 0).compareTo(
+        b.deadlineDate?.millisecondsSinceEpoch ?? 0,
+      ),
+    );
+    sortedTasks.sort(
       (a, b) => a.status.sortIndex.compareTo(b.status.sortIndex),
     );
     return SizedBox(
