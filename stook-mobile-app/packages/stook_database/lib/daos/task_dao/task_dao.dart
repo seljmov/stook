@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
-import 'package:stook_database/models/task.dart';
+import 'package:stook_shared/stook_shared.dart';
 
 import '../../database_context.dart';
-import '../../models/enums/task_status.dart';
+import '../../models/task.dart';
 
 part 'task_dao.g.dart';
 

@@ -24,6 +24,8 @@ dependencies:
     path: 'packages/stook_database'
   stook_importance_algorithm:
     path: 'packages/importance_algorithm'
+  stook_shared:
+    path: 'packages/stook_shared'
   flutter_markdown_editor:
     path: 'packages/flutter_markdown_editor'
   drift_db_viewer: ^2.1.0

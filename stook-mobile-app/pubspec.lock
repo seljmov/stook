@@ -823,14 +823,21 @@ packages:
       path: "packages/stook_database"
       relative: true
     source: path
-    version: "0.0.3"
+    version: "0.0.4"
   stook_importance_algorithm:
     dependency: "direct main"
     description:
       path: "packages/importance_algorithm"
       relative: true
     source: path
-    version: "0.0.2"
+    version: "0.0.3"
+  stook_shared:
+    dependency: "direct main"
+    description:
+      path: "packages/stook_shared"
+      relative: true
+    source: path
+    version: "0.0.1"
   stream_channel:
     dependency: transitive
     description:
@@ -1016,5 +1023,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.3.2 <4.0.0"
+  dart: ">=3.3.4 <4.0.0"
   flutter: ">=3.19.0"

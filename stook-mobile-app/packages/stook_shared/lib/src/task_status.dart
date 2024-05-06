@@ -55,9 +55,9 @@ extension TaskStatusExtension on TaskStatus {
 
   /// Возвращает индекс сортировки для перечисления.
   int get sortIndex => switch (this) {
-        TaskStatus.inProgress => 0,
-        TaskStatus.pending => 1,
-        TaskStatus.overdue => 2,
+        TaskStatus.overdue => 0,
+        TaskStatus.inProgress => 1,
+        TaskStatus.pending => 2,
         TaskStatus.completed => 3,
       };
 }

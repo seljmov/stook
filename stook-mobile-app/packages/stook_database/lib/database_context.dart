@@ -9,6 +9,7 @@ import 'package:path/path.dart' as p;
 // ignore: depend_on_referenced_packages
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
+import 'package:stook_shared/stook_shared.dart';
 
 import 'daos/lesson_dao/lesson_dao.dart';
 import 'daos/note_dao/note_dao.dart';

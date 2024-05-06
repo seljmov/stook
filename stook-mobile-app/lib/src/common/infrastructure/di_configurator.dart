@@ -7,7 +7,6 @@ import '../../feature/notes/bloc/note_bloc.dart';
 import '../../feature/resources/bloc/resource_bloc.dart';
 import '../../feature/schedule_put/bloc/schedule_put_bloc.dart';
 import '../../feature/tasks/bloc/task_bloc.dart';
-import '../../feature/tasks/entities/task_entity.dart';
 import '../../feature/tasks/repositories/importance_tasks_storage.dart';
 
 /// Глобальный инжектор.
@@ -21,17 +20,17 @@ class DiConfigurator {
     injector.registerDependency<IAlgorithmDataPreparer>(
       () => AlgorithmDataPreparer(),
     );
-    injector.registerDependency<IAlgorithmImportance>(
-      () => AlgorithmImportance(),
-    );
-    injector.registerDependency<IAlgorithmSolver<TaskEntity>>(
-      () => AlgorithmSolver<TaskEntity>(
-        algorithmDataPreparer: injector.get<IAlgorithmDataPreparer>(),
-        algorithmImportance: injector.get<IAlgorithmImportance>(),
-      ),
+    injector.registerDependency<IAlgorithmSolver>(
+      () => AlgorithmSolver(),
     );
     injector.registerDependency<IImportanceTasksStorage>(
       () => ImportanceTasksStorage(),
+    );
+    injector.registerDependency<IAlgorithmRunner>(
+      () => AlgorithmRunner(
+        algorithmDataPreparer: injector.get<IAlgorithmDataPreparer>(),
+        algorithmSolver: injector.get<IAlgorithmSolver>(),
+      ),
     );
 
     injector.registerSingleton<DatabaseContext>(() => DatabaseContext());
@@ -45,7 +44,7 @@ class DiConfigurator {
       () => TaskBloc(
         databaseContext: injector.get<DatabaseContext>(),
         importanceTasksStorage: injector.get<IImportanceTasksStorage>(),
-        algorithmSolver: injector.get<IAlgorithmSolver<TaskEntity>>(),
+        algorithmRunner: injector.get<IAlgorithmRunner>(),
       ),
     );
     injector.registerDependency<INoteBloc>(

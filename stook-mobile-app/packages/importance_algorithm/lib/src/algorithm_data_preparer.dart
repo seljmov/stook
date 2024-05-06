@@ -1,79 +1,92 @@
+// ignore_for_file: prefer_for_elements_to_map_fromiterable
+
+import 'package:stook_shared/stook_shared.dart';
+
 import 'algorithm_item.dart';
 
 /// Интерфейс для подготовки данных для алгоритма.
 abstract class IAlgorithmDataPreparer {
   /// Подготовить данные для алгоритма.
-  /// [data] - данные для подготовки.
-  /// [getAlgorithmItem] - функция, которая преобразует элемент данных в [AlgorithmItem].
-  List<AlgorithmItem> getPreparedData<T>(
-    List<T> data,
-    AlgorithmItem Function(T item) getAlgorithmItem,
-  );
+  List<AlgorithmItem> getPreparedData(List<TaskEntity> data);
 }
 
 /// Подготовка данных для алгоритма.
 class AlgorithmDataPreparer implements IAlgorithmDataPreparer {
   @override
-  List<AlgorithmItem> getPreparedData<T>(
-    List<T> data,
-    AlgorithmItem Function(T item) getAlgorithmItem,
-  ) {
-    final List<AlgorithmItem> convertedItems =
-        data.map(getAlgorithmItem).toList();
-    final itemsDependsPriorities = _getTasksDependsPriorities(convertedItems);
-    final itemsForPlanning = _getTasksForPlanning(convertedItems).toList();
-
-    return itemsForPlanning
-        .map((item) => item.copyWith(
-            dependsPriority: itemsDependsPriorities[item.id] ?? 0))
+  List<AlgorithmItem> getPreparedData(List<TaskEntity> data) {
+    final tasks = data
+        .where((task) => task.deadlineDate != null && task.priority != null)
         .toList();
-  }
 
-  /// Получить данные, которые можно запланировать
-  List<AlgorithmItem> _getTasksForPlanning(List<AlgorithmItem> tasks) {
-    final tasksIds = tasks.map((task) => task.id);
-    return tasks
+    final taskPriorityById = _getTaskPriorityById(tasks);
+
+    final taskStatusById = Map<int, TaskStatus>.fromIterable(
+      data,
+      key: (task) => task.id,
+      value: (task) => task.status,
+    );
+
+    // Получить задачи, которые можно планировать, то есть
+    // 1. В статусе "Создана" или "В процессе".
+    // 2. Не имеют подзадач в статусе "Создана" или "В процессе".
+    // 3. Не зависят от задач, находящихся в статусе "Создана" или "В процессе".
+    final algorithmItems = tasks
         .where((task) =>
-            task.dependsOnTasksIds.where((id) => tasksIds.contains(id)).isEmpty)
+            planningStatuses.contains(task.status) &&
+            (task.subtasksIds.isEmpty ||
+                task.subtasksIds.every((subtaskId) =>
+                    !planningStatuses.contains(taskStatusById[subtaskId]))) &&
+            (task.dependOnTasksIds.isEmpty ||
+                task.dependOnTasksIds.every((dependOnId) =>
+                    !planningStatuses.contains(taskStatusById[dependOnId]))))
+        .map((task) => AlgorithmItem(
+              id: task.id,
+              deadlineDate: task.deadlineDate!,
+              priority: task.priority!.toPriorityNumber,
+              dependsPriority: taskPriorityById[task.id] ?? 0,
+            ))
         .toList();
+
+    return algorithmItems;
   }
 
-  /// Получить идентификаторы заказов, от которых зависят другие заказы с их приоритетом зависимости
-  Map<int, int> _getTasksDependsPriorities(List<AlgorithmItem> tasks) {
-    final taskByTaskIdMap = Map<int, AlgorithmItem>.fromIterable(
+  /// Получить приоритет задачи по идентификатору, где [tasks] - задачи для подсчета приоритета.
+  ///
+  /// Работает по принципу:
+  /// 1. Если у задачи (А) есть подзадачи, то к каждой подзадаче в приоритет зависимости добавляется приоритет задачи А.
+  /// 2. Если у задачи (А) есть задачи, от которых она зависит, то к каждой задаче, от которой зависит задача А, в приоритет зависимости добавляется приоритет задачи А.
+  ///
+  /// Возвращает [Map], где ключ - идентификатор задачи, значение - приоритет задачи.
+  Map<int, int> _getTaskPriorityById(List<TaskEntity> tasks) {
+    final tasksById = Map<int, TaskEntity>.fromIterable(
       tasks,
       key: (task) => task.id,
+      value: (task) => task,
     );
-    final dependsIdsByTaskId = tasks
-        .where((task) => task.dependsOnTasksIds.isNotEmpty)
-        .map((task) => (task.id, task.dependsOnTasksIds))
-        .toList();
-    final revertedDependsIdsByTaskId = <int, List<int>>{};
-    for (var entry in dependsIdsByTaskId) {
-      var taskId = entry.$1;
-      var dependsIds = entry.$2;
 
-      for (var dependId in dependsIds) {
-        revertedDependsIdsByTaskId.putIfAbsent(dependId, () => []);
-        revertedDependsIdsByTaskId[dependId]!.add(taskId);
+    final taskPriorityById = Map<int, int>.fromIterable(
+      tasks,
+      key: (task) => task.id,
+      value: (task) => 0,
+    );
+
+    for (final task in tasks) {
+      var summa = taskPriorityById[task.id] ?? 0;
+      summa += task.priority!.toPriorityNumber;
+
+      final mergeIds = Set<int>.from(task.subtasksIds)
+        ..addAll(task.dependOnTasksIds);
+
+      for (final id in mergeIds) {
+        final mergeTask = tasksById[id];
+        if (mergeTask != null && planningStatuses.contains(mergeTask.status)) {
+          var mergeSumma = taskPriorityById[mergeTask.id] ?? 0;
+          mergeSumma += summa;
+          taskPriorityById[mergeTask.id] = mergeSumma;
+        }
       }
     }
 
-    final dependsPrioritiesByTaskId = <int, int>{};
-    for (var entry in revertedDependsIdsByTaskId.entries) {
-      var taskId = entry.key;
-      var dependsIds = entry.value;
-
-      var dependsPriorities = dependsIds
-          .map((dependId) => taskByTaskIdMap[dependId]!.priority)
-          .toList();
-      var sumDependsPriority = dependsPriorities.isNotEmpty
-          ? dependsPriorities.reduce((a, b) => a + b)
-          : 0;
-
-      dependsPrioritiesByTaskId[taskId] = sumDependsPriority;
-    }
-
-    return dependsPrioritiesByTaskId;
+    return taskPriorityById;
   }
 }

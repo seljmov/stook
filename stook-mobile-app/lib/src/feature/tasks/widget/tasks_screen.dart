@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:stook_database/models/models.dart';
+import 'package:stook_shared/stook_shared.dart';
 
 import '../bloc/task_scope.dart';
-import '../entities/task_base_entity.dart';
 import 'task_card.dart';
 
 /// Экран задач.
@@ -17,6 +16,11 @@ class TasksScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sortedTasks = tasks.toList();
+    sortedTasks.sort(
+      (a, b) => (a.deadlineDate?.millisecondsSinceEpoch ?? 0).compareTo(
+        b.deadlineDate?.millisecondsSinceEpoch ?? 0,
+      ),
+    );
     sortedTasks.sort(
       (a, b) => a.status.sortIndex.compareTo(b.status.sortIndex),
     );

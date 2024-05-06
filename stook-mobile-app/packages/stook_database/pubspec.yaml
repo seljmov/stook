@@ -1,6 +1,6 @@
 name: stook_database
 description: "A database package for the Stook app"
-version: 0.0.3
+version: 0.0.4
 publish_to: 'none'
 
 environment:
@@ -15,6 +15,8 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.0
   path_provider: ^2.0.0
   path: ^1.9.0
+  stook_shared:
+    path: '../stook_shared'
 
 dev_dependencies:
   flutter_test:

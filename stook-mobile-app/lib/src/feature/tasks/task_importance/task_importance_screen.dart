@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:stook_shared/stook_shared.dart';
 
 import '../../../common/constants/constants.dart';
 import '../bloc/task_scope.dart';
-import '../entities/task_base_entity.dart';
 import '../widget/task_card.dart';
 
 /// Экран важности задачи.
@@ -18,20 +18,31 @@ class TaskImportanceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: Вынести сортировку в блок.
+    final sortedTasks = tasks.toList();
+    sortedTasks.sort(
+      (a, b) => (a.deadlineDate?.millisecondsSinceEpoch ?? 0).compareTo(
+        b.deadlineDate?.millisecondsSinceEpoch ?? 0,
+      ),
+    );
+    sortedTasks.sort(
+      (a, b) => a.status.sortIndex.compareTo(b.status.sortIndex),
+    );
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.69,
       child: Visibility(
-        visible: tasks.isNotEmpty && lastImportanceAlgorithmRunTime != null,
+        visible:
+            sortedTasks.isNotEmpty && lastImportanceAlgorithmRunTime != null,
         child: SingleChildScrollView(
           child: Column(
             children: [
-              ...List.generate(tasks.length, (index) {
-                final task = tasks[index];
+              ...List.generate(sortedTasks.length, (index) {
+                final task = sortedTasks[index];
                 return Padding(
                   padding: EdgeInsets.only(top: index != 0 ? 16 : 0).copyWith(
                     left: 16,
                     right: 8,
-                    bottom: index == tasks.length - 1 ? 64 : 0,
+                    bottom: index == sortedTasks.length - 1 ? 64 : 0,
                   ),
                   child: TaskCard(
                     task: task,

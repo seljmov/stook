@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:stook_database/models/enums/task_priority.dart';
-import 'package:stook_database/models/enums/task_status.dart';
+import 'package:stook_shared/stook_shared.dart';
 
 import '../../../common/constants/constants.dart';
 import '../bloc/task_scope.dart';
-import '../entities/task_base_entity.dart';
 import 'task_status_card.dart';
 
 /// Карточка задачи.
@@ -83,7 +81,12 @@ class TaskCard extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 2.0),
                     child: Text(
-                        'Крайний срок: ${kDateFormat.format(task.deadlineDate!)}'),
+                      'Крайний срок: ${kDateFormat.format(task.deadlineDate!)}',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                      ),
+                    ),
                   ),
               ],
             ),

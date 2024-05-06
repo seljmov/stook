@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:stook_database/models/enums/enums.dart';
+import 'package:stook_shared/stook_shared.dart';
 
 /// Таблица задач.
 class Tasks extends Table {

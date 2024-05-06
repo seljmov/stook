@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stook_database/models/enums/task_status.dart';
+import 'package:stook_shared/stook_shared.dart';
 
 /// Карточка статуса задачи.
 class TaskStatusCard extends StatelessWidget {

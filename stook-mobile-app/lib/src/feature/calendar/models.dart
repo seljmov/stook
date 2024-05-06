@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stook_database/models/enums/enums.dart';
+import 'package:stook_shared/stook_shared.dart';
 
 /// День расписания.
 class CalendarDayEntity {
