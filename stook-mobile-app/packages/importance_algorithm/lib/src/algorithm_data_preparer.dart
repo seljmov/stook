@@ -91,11 +91,9 @@ class AlgorithmDataPreparer implements IAlgorithmDataPreparer {
   }
 
   Map<int, int> _getTaskPriorityById2(List<TaskEntity> tasks) {
-    final taskPriorityById = Map<int, int>.fromIterable(
-      tasks,
-      key: (task) => task.id,
-      value: (task) => task.priority!.toPriorityNumber,
-    );
+    final taskPriorityById = <int, int>{
+      for (final task in tasks) task.id: task.priority!.toPriorityNumber,
+    };
 
     final dependOnTasksById = <int, List<int>>{};
 
