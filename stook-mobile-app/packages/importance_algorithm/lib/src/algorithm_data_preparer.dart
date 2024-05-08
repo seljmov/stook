@@ -18,7 +18,7 @@ class AlgorithmDataPreparer implements IAlgorithmDataPreparer {
         .where((task) => task.deadlineDate != null && task.priority != null)
         .toList();
 
-    final taskPriorityById = _getTaskPriorityById(tasks);
+    final taskPriorityById = _getTaskPriorityById2(tasks);
 
     final taskStatusById = Map<int, TaskStatus>.fromIterable(
       data,
@@ -85,6 +85,38 @@ class AlgorithmDataPreparer implements IAlgorithmDataPreparer {
           taskPriorityById[mergeTask.id] = mergeSumma;
         }
       }
+    }
+
+    return taskPriorityById;
+  }
+
+  Map<int, int> _getTaskPriorityById2(List<TaskEntity> tasks) {
+    final taskPriorityById = Map<int, int>.fromIterable(
+      tasks,
+      key: (task) => task.id,
+      value: (task) => task.priority!.toPriorityNumber,
+    );
+
+    final dependOnTasksById = <int, List<int>>{};
+
+    for (final task in tasks) {
+      for (final dependOnId in task.dependOnTasksIds) {
+        dependOnTasksById.putIfAbsent(dependOnId, () => []);
+        dependOnTasksById[dependOnId]!.add(task.id);
+      }
+
+      for (final subtaskId in task.subtasksIds) {
+        dependOnTasksById.putIfAbsent(subtaskId, () => []);
+        dependOnTasksById[subtaskId]!.add(task.id);
+      }
+    }
+
+    for (final dependOnTasks in dependOnTasksById.entries) {
+      final taskId = dependOnTasks.key;
+      taskPriorityById[taskId] = dependOnTasks.value.fold<int>(
+        0,
+        (sum, id) => sum + (taskPriorityById[id] ?? 0),
+      );
     }
 
     return taskPriorityById;

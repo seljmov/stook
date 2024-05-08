@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:stook_shared/stook_shared.dart';
 
@@ -24,8 +26,10 @@ class TasksScreen extends StatelessWidget {
     sortedTasks.sort(
       (a, b) => a.status.sortIndex.compareTo(b.status.sortIndex),
     );
+    // TODO: Подумать над рефакторингом.
+    final multi = Platform.isIOS ? 0.69 : 0.76;
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.69,
+      height: MediaQuery.of(context).size.height * multi,
       child: ListView.builder(
         itemCount: sortedTasks.length,
         itemBuilder: (context, index) {

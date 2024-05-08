@@ -62,9 +62,9 @@ extension TaskPriorityExtension on TaskPriority {
       case TaskPriority.A:
         return 9;
       case TaskPriority.B:
-        return 5;
+        return 6;
       case TaskPriority.C:
-        return 1;
+        return 3;
       default:
         throw Exception('Unknown task priority: $this');
     }

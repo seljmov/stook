@@ -596,109 +596,112 @@ class BottomSheepMultiSelector {
     await showModalBottomSheet(
       context: context,
       builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 32.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 16.0),
-                child: Text(
-                  'Выберите задачи',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 32.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 16.0),
+                  child: Text(
+                    'Выберите задачи',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
-              ),
-              Visibility(
-                visible: tasks.isEmpty,
-                child: const SizedBox(
-                  width: double.infinity,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 32.0),
-                    child: Center(
-                      child: Text(
-                        'Нет доступных задач',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
+                Visibility(
+                  visible: tasks.isEmpty,
+                  child: const SizedBox(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 32.0),
+                      child: Center(
+                        child: Text(
+                          'Нет доступных задач',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                replacement: Column(
-                  children: [
-                    ValueListenableBuilder(
-                      valueListenable: selectedTasksNotifier,
-                      builder: (context, selectedTasks, child) {
-                        return Column(
-                          children: List.generate(
-                            tasks.length,
-                            (index) {
-                              final task = tasks[index];
-                              return GestureDetector(
-                                onTap: () {
-                                  if (selectedTasks.contains(task)) {
-                                    selectedTasksNotifier.value = selectedTasks
-                                        .where((t) => t != task)
-                                        .toList();
-                                  } else {
-                                    selectedTasksNotifier.value = [
-                                      ...selectedTasks,
-                                      task,
-                                    ];
-                                  }
-                                },
-                                child: Row(
-                                  children: [
-                                    Checkbox(
-                                      value: selectedTasks.contains(task),
-                                      onChanged: (value) {
-                                        if (value != null && value == true) {
-                                          selectedTasksNotifier.value = [
-                                            ...selectedTasks,
-                                            task,
-                                          ];
-                                        } else {
-                                          selectedTasksNotifier.value =
-                                              selectedTasks
-                                                  .where((t) => t != task)
-                                                  .toList();
-                                        }
-                                      },
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        task.title,
-                                        style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500),
+                  replacement: Column(
+                    children: [
+                      ValueListenableBuilder(
+                        valueListenable: selectedTasksNotifier,
+                        builder: (context, selectedTasks, child) {
+                          return Column(
+                            children: List.generate(
+                              tasks.length,
+                              (index) {
+                                final task = tasks[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    if (selectedTasks.contains(task)) {
+                                      selectedTasksNotifier.value =
+                                          selectedTasks
+                                              .where((t) => t != task)
+                                              .toList();
+                                    } else {
+                                      selectedTasksNotifier.value = [
+                                        ...selectedTasks,
+                                        task,
+                                      ];
+                                    }
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Checkbox(
+                                        value: selectedTasks.contains(task),
+                                        onChanged: (value) {
+                                          if (value != null && value == true) {
+                                            selectedTasksNotifier.value = [
+                                              ...selectedTasks,
+                                              task,
+                                            ];
+                                          } else {
+                                            selectedTasksNotifier.value =
+                                                selectedTasks
+                                                    .where((t) => t != task)
+                                                    .toList();
+                                          }
+                                        },
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                                      Expanded(
+                                        child: Text(
+                                          task.title,
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Закрыть'),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Закрыть'),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
