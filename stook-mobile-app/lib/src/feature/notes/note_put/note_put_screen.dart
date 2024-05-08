@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown_editor/flutter_markdown_editor.dart';
 import 'package:stook_database/database_context.dart';
 
+import '../../../common/constants/constants.dart';
 import '../../../common/widget/thesis_tab_bar.dart';
 import '../bloc/note_scope.dart';
 
@@ -231,7 +232,7 @@ class _NotePutScreenState extends State<NotePutScreen> {
               Padding(
                 padding: const EdgeInsets.only(top: 16),
                 child: Text(
-                  'Последнее изменение: ${widget.note!.lastModifiedDate}',
+                  'Последнее изменение: ${kDateTimeFormat.format(widget.note!.lastModifiedDate)}',
                 ),
               ),
             const SizedBox(height: 32),
